@@ -37,16 +37,73 @@ static int make_symbol(YYSTYPE*, YYSTYPE);
 %option verbose
 %option warn
 
-WS [ \r\n\t]+
-DIGIT [0-9]
 
 %%
+[\r\n]+ {SET_COLUMN(1);}
+[ \t]+ {INC_COLUMN(yyleng);}
 
-{WS} { /* pass */ }
 
-{DIGIT} { int x = GET_COLUMN(); INC_COLUMN(2); return TOK(HI, x, std::string { yytext, static_cast<size_t>(yyleng) }); }
+true {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_true, x);}
+false {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_false,x);}
+
+if {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_if,x);}
+while {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_while,x);}
+for {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_for,x);}
+break {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_break,x);}
+continue {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_continue,x);}
+return {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_return,x);}
+
+"+=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_plus_assign,x);} 
+"-=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_minus_assign,x);}
+"*=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_star_assign,x);}
+"/=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_slash_assign,x);}
+
+"int"|"float"|"bool"|"void" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_type,x);}
+
+
+
+
+
+"(" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_lparen,x);}
+")" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_rparen,x);}
+"{" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_lbrace,x);}
+"}" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_rbrace,x);}
+
+"==" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_eq,x);}
+"!=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_ne,x);}
+"<" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_lt,x);}
+">" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_gt,x);}
+"<=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_le,x);}
+">=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_ge,x);}
+
+"+" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_plus,x);}
+"-" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_minus,x);}
+"*" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_star,x);}
+"/" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_slash,x);}
+
+"&&" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_log_and,x);}
+"||" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_log_or,x);}
+
+"," {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_comma,x);}
+";" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_semicolon,x);}
+":" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_colon,x);}
+"?" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_question_mark,x);}
+
+"=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_assign,x);}
+
+[a-zA-Z_][a-zA-Z0-9_]* {int x= GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_identifier, x);}
+
+0|[1-9][0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_integer, x);}
+
+
+
+(0|[1-9][0-9]*)\.[0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x);}
+\.[0-9]+ {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x);}
+(0|[1-9][0-9]*)\.[0-9]*[eE][+-]?[1-9][0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x);}
+
 
 . { printf("[error] invalid token.\n"); return TOK(YYUNDEF, GET_COLUMN()); }
+<<EOF>> {yyterminate();}
 
 %%
 

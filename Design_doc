@@ -1,0 +1,7 @@
+PATH=$HOME/ece467/prefix/bin:$PATH
+
+path variable is changed, do nto use default cmake, change to right
+/prefix/cmake
+/prefix/c++
+in setting
+

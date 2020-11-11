@@ -1,0 +1,12 @@
+/home/memojigsaw/ece467/prefix/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/home/memojigsaw/ece467/prefix/bin/c++ -G "CodeBlocks - Unix Makefiles" /home/memojigsaw/ece467/ece467-1002654950
+-- The CXX compiler identification is GNU 10.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/memojigsaw/ece467/prefix/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found FLEX: /home/memojigsaw/ece467/prefix/bin/flex (found version "2.6.4") 
+-- Found BISON: /home/memojigsaw/ece467/prefix/bin/bison (found suitable version "3.6.4", minimum required is "3.6.4") 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/memojigsaw/ece467/ece467-1002654950/cmake-build-debug
