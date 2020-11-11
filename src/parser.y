@@ -42,7 +42,7 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %define api.value.type variant
 %define api.token.constructor
 //todo enable in lab 3
-//%define api.value.automove
+%define api.value.automove
 %define parse.trace
 %define parse.assert
 
