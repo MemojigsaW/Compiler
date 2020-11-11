@@ -582,415 +582,415 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 98 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 99 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                       { yylhs.value.as < std::unique_ptr<Node> > () = nullptr; TRACEPARSE("root->function_list");}
 #line 588 "parser.cpp"
     break;
 
   case 3:
-#line 100 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 101 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                 {TRACEPARSE("function_list->function_plus");}
 #line 594 "parser.cpp"
     break;
 
   case 4:
-#line 102 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 103 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("function_plus->function");}
 #line 600 "parser.cpp"
     break;
 
   case 5:
-#line 103 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 104 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("function_plus->function function_plus");}
 #line 606 "parser.cpp"
     break;
 
   case 6:
-#line 105 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 106 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                         {TRACEPARSE("function->function_decl TOK_semicolon");}
 #line 612 "parser.cpp"
     break;
 
   case 7:
-#line 106 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 107 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("function->function_decl");}
 #line 618 "parser.cpp"
     break;
 
   case 8:
-#line 108 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 109 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                {TRACEPARSE("function_decl->type name TOK_lparen parameter_list TOK_rparen");}
 #line 624 "parser.cpp"
     break;
 
   case 9:
-#line 110 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 111 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                 {TRACEPARSE("function_defn->function_decl block	");}
 #line 630 "parser.cpp"
     break;
 
   case 10:
-#line 112 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
-                                                                        {TRACEPARSE("type->TOK_type");}
+#line 113 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+                                                                        {TRACEPARSE("type->TOK_identifier");}
 #line 636 "parser.cpp"
     break;
 
   case 11:
-#line 114 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 115 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("name->TOK_identifier");}
 #line 642 "parser.cpp"
     break;
 
   case 12:
-#line 116 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 117 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                 {TRACEPARSE("parameter_list->declaration comma_dec_kleene");}
 #line 648 "parser.cpp"
     break;
 
   case 13:
-#line 117 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 118 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                         {TRACEPARSE("parameter_list->/*empty*/");}
 #line 654 "parser.cpp"
     break;
 
   case 14:
-#line 119 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 120 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                          {TRACEPARSE("comma_dec_kleene->TOK_comma declaration comma_dec_kleene ");}
 #line 660 "parser.cpp"
     break;
 
   case 15:
-#line 120 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 121 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                          {TRACEPARSE("comma_dec_kleene->/*empty*/");}
 #line 666 "parser.cpp"
     break;
 
   case 16:
-#line 122 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 123 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                 {TRACEPARSE("block->TOK_lbrace suite TOK_rbrace");}
 #line 672 "parser.cpp"
     break;
 
   case 17:
-#line 124 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 125 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("suite->statement_kleene");}
 #line 678 "parser.cpp"
     break;
 
   case 18:
-#line 126 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 127 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                         {TRACEPARSE("statement_kleene->statement statement_kleene");}
 #line 684 "parser.cpp"
     break;
 
   case 19:
-#line 127 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 128 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                         {TRACEPARSE("statement_kleene->/*empty*/");}
 #line 690 "parser.cpp"
     break;
 
   case 20:
-#line 129 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 130 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("declaration->type name");}
 #line 696 "parser.cpp"
     break;
 
   case 21:
-#line 132 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 133 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                         {TRACEPARSE("statement->single_statement TOK_semicolon");}
 #line 702 "parser.cpp"
     break;
 
   case 22:
-#line 133 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 134 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("statement->compound_statement");}
 #line 708 "parser.cpp"
     break;
 
   case 23:
-#line 136 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 137 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                 {TRACEPARSE("single_statement->declaration TOK_assign expression");}
 #line 714 "parser.cpp"
     break;
 
   case 24:
-#line 137 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 138 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                         {TRACEPARSE("single_statement->name TOK_assign expression");}
 #line 720 "parser.cpp"
     break;
 
   case 25:
-#line 138 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 139 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                         {TRACEPARSE("single_statement->name binary_op expression");}
 #line 726 "parser.cpp"
     break;
 
   case 26:
-#line 139 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 140 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                         {TRACEPARSE("single_statement->TOK_break");}
 #line 732 "parser.cpp"
     break;
 
   case 27:
-#line 140 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 141 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                 {TRACEPARSE("single_statement->TOK_continue");}
 #line 738 "parser.cpp"
     break;
 
   case 28:
-#line 141 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 142 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("single_statement->TOK_return expression_question");}
 #line 744 "parser.cpp"
     break;
 
   case 29:
-#line 142 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 143 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                         {TRACEPARSE("single_statement->expression");}
 #line 750 "parser.cpp"
     break;
 
   case 30:
-#line 145 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 146 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("expression_question->expression");}
 #line 756 "parser.cpp"
     break;
 
   case 31:
-#line 146 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 147 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                         {TRACEPARSE("expression_question->/*empty*/");}
 #line 762 "parser.cpp"
     break;
 
   case 32:
-#line 152 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 153 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                         {TRACEPARSE("expression->TOK_true");}
 #line 768 "parser.cpp"
     break;
 
   case 33:
-#line 153 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 154 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                         {TRACEPARSE("expression->TOK_false");}
 #line 774 "parser.cpp"
     break;
 
   case 34:
-#line 154 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 155 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                         {TRACEPARSE("expression->TOK_integer");}
 #line 780 "parser.cpp"
     break;
 
   case 35:
-#line 155 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 156 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                         {TRACEPARSE("expression->TOK_float");}
 #line 786 "parser.cpp"
     break;
 
   case 36:
-#line 156 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 157 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                 {TRACEPARSE("expression->binary_expression");}
 #line 792 "parser.cpp"
     break;
 
   case 37:
-#line 157 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 158 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                 {TRACEPARSE("expression->unary_expression");}
 #line 798 "parser.cpp"
     break;
 
   case 38:
-#line 158 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 159 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                         {TRACEPARSE("expression->relational_expression");}
 #line 804 "parser.cpp"
     break;
 
   case 39:
-#line 159 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 160 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                 {TRACEPARSE("expression->ternary_expression");}
 #line 810 "parser.cpp"
     break;
 
   case 40:
-#line 160 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 161 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                 {TRACEPARSE("expression->cast_expression");}
 #line 816 "parser.cpp"
     break;
 
   case 41:
-#line 161 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 162 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                                 {TRACEPARSE("expression->function_call");}
 #line 822 "parser.cpp"
     break;
 
   case 42:
-#line 162 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 163 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("expression->TOK_lparen	expression TOK_rparen");}
 #line 828 "parser.cpp"
     break;
 
   case 43:
-#line 165 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 166 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("compound_statement->TOK_if	TOK_lparen	expression TOK_rparen	block");}
 #line 834 "parser.cpp"
     break;
 
   case 44:
-#line 167 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 168 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
         {TRACEPARSE("compound_statement->TOK_for	TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block");}
 #line 840 "parser.cpp"
     break;
 
   case 45:
-#line 168 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 169 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("compound_statement->TOK_while	TOK_lparen	expression TOK_rparen block");}
 #line 846 "parser.cpp"
     break;
 
   case 46:
-#line 171 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 172 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                         {TRACEPARSE("single_statement_question->single_statement");}
 #line 852 "parser.cpp"
     break;
 
   case 47:
-#line 172 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 173 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                         {TRACEPARSE("single_statement->/*empty*/");}
 #line 858 "parser.cpp"
     break;
 
   case 48:
-#line 175 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 176 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("binary_expression->expression binary_op expression");}
 #line 864 "parser.cpp"
     break;
 
   case 49:
-#line 178 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 179 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("unary_expression->unary_op expression %prec TOK_unop");}
 #line 870 "parser.cpp"
     break;
 
   case 50:
-#line 181 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 182 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                                 {TRACEPARSE("relational_expression->expression relational_op expression");}
 #line 876 "parser.cpp"
     break;
 
   case 51:
-#line 184 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 185 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("binary_op->TOK_plus");}
 #line 882 "parser.cpp"
     break;
 
   case 52:
-#line 185 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 186 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("binary_op->TOK_minus");}
 #line 888 "parser.cpp"
     break;
 
   case 53:
-#line 186 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 187 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("binary_op->TOK_star");}
 #line 894 "parser.cpp"
     break;
 
   case 54:
-#line 187 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 188 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("binary_op->TOK_slash");}
 #line 900 "parser.cpp"
     break;
 
   case 55:
-#line 188 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 189 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("binary_op->TOK_log_and");}
 #line 906 "parser.cpp"
     break;
 
   case 56:
-#line 189 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 190 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("binary_op->TOK_log_or");}
 #line 912 "parser.cpp"
     break;
 
   case 57:
-#line 192 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 193 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                 {TRACEPARSE("unary_op->TOK_minus");}
 #line 918 "parser.cpp"
     break;
 
   case 58:
-#line 195 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 196 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                         {TRACEPARSE("relational_op->TOK_eq");}
 #line 924 "parser.cpp"
     break;
 
   case 59:
-#line 196 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 197 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                         {TRACEPARSE("relational_op->TOK_ne");}
 #line 930 "parser.cpp"
     break;
 
   case 60:
-#line 197 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 198 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                         {TRACEPARSE("relational_op->TOK_lt");}
 #line 936 "parser.cpp"
     break;
 
   case 61:
-#line 198 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 199 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                         {TRACEPARSE("relational_op->TOK_gt");}
 #line 942 "parser.cpp"
     break;
 
   case 62:
-#line 199 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 200 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                         {TRACEPARSE("relational_op->TOK_le");}
 #line 948 "parser.cpp"
     break;
 
   case 63:
-#line 200 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 201 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                         {TRACEPARSE("relational_op->TOK_ge");}
 #line 954 "parser.cpp"
     break;
 
   case 64:
-#line 203 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 204 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
 {TRACEPARSE("ternary_expression->expression TOK_question_mark expression TOK_colon expression");}
 #line 960 "parser.cpp"
     break;
 
   case 65:
-#line 205 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 206 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                                         {TRACEPARSE("cast_expression->TOK_lparen	type TOK_rparen	expression");}
 #line 966 "parser.cpp"
     break;
 
   case 66:
-#line 207 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 208 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                                 {TRACEPARSE("function_call->name TOK_lparen _ece TOK_rparen");}
 #line 972 "parser.cpp"
     break;
 
   case 67:
-#line 210 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 211 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("_ece->expression _ecee");}
 #line 978 "parser.cpp"
     break;
 
   case 68:
-#line 211 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 212 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("_ece->/*empty*/");}
 #line 984 "parser.cpp"
     break;
 
   case 69:
-#line 213 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 214 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                         {TRACEPARSE("_ecee->TOK_comma expression _ecee");}
 #line 990 "parser.cpp"
     break;
 
   case 70:
-#line 214 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 215 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
                                 {TRACEPARSE("_ecee->/*empty*/");}
 #line 996 "parser.cpp"
     break;
@@ -1185,141 +1185,141 @@ namespace yy {
 
 
 
-  const signed char parser::yypact_ninf_ = -83;
+  const signed char parser::yypact_ninf_ = -91;
 
-  const signed char parser::yytable_ninf_ = -1;
+  const signed char parser::yytable_ninf_ = -11;
 
   const short
   parser::yypact_[] =
   {
-     -35,   -83,     8,   -83,   -83,   -35,    -7,   -83,     5,   -83,
-     -83,    42,   -83,   -83,   -83,     1,   -83,   -83,   -83,   -83,
-      86,   -83,     3,     4,     9,   -83,   -83,   246,     5,    92,
-      10,   -83,   -19,    42,   -15,   225,   -83,   -83,   -83,   -83,
-     246,   -83,   -83,   -83,   -35,    13,    11,   115,   246,   246,
-      69,   -83,   225,   -83,   246,   -83,   -83,   -83,   -83,   -83,
-     -83,   246,   246,   -83,   246,   -83,   -83,   -83,   -83,   -83,
-     -83,   -83,   -83,   246,   246,   246,   -83,    17,    -3,   246,
-     -83,   137,   159,   -83,     0,   181,    23,   225,   225,   225,
-     203,   -83,   -83,   -83,   -35,   -83,   -83,    25,    25,   246,
-     246,   -83,   -83,   246,    -3,   -83,   -83,     2,   181,   225,
-     -83,    69,   -83,    27,    25,   -83
+       0,   -91,    13,   -91,   -91,     0,    -6,   -91,     5,   -91,
+     -91,    64,   -91,   -91,   -91,     4,    18,   -91,   -91,   -91,
+     -91,   230,   -91,    12,    20,    24,   -91,   -91,   240,     5,
+      76,    22,   -91,     1,    64,     3,   209,   -91,   -91,   -91,
+     -91,   240,   -91,   -91,   -91,     0,    31,    34,    99,   240,
+     240,    10,   -91,   209,   -91,   240,   -91,   -91,   -91,   -91,
+     -91,   -91,   240,   240,   -91,   240,   -91,   -91,   -91,   -91,
+     -91,   -91,   -91,   -91,   240,   240,   240,   -91,    36,    17,
+     240,   -91,   121,   143,   -91,    21,   165,    39,   209,   209,
+     209,   187,   -91,   -91,   -91,     0,   -91,   -91,    41,    41,
+     240,   240,   -91,   -91,   240,    17,   -91,   -91,    23,   165,
+     209,   -91,    10,   -91,    40,    41,   -91
   };
 
   const signed char
   parser::yydefact_[] =
   {
        0,    10,     0,     2,     3,     4,     0,     7,     0,     1,
-       5,    19,     6,     9,    11,     0,    34,    35,    32,    33,
-       0,    57,     0,     0,     0,    26,    27,    31,     0,     0,
-       0,    17,     0,    19,     0,    29,    22,    36,    37,    38,
-       0,    39,    40,    41,    13,     0,     0,     0,     0,     0,
-      47,    28,    30,    20,    68,    51,    52,    53,    54,    55,
-      56,     0,     0,    16,     0,    18,    21,    58,    59,    60,
-      61,    62,    63,     0,     0,     0,    49,     0,    15,     0,
-      42,     0,     0,    46,     0,    70,     0,    24,    25,    23,
-       0,    48,    50,     8,     0,    12,    65,     0,     0,    31,
-       0,    67,    66,     0,    15,    43,    45,     0,    70,    64,
-      14,    47,    69,     0,     0,    44
+       5,    19,     6,     9,    11,     0,    11,    34,    35,    32,
+      33,     0,    57,     0,     0,     0,    26,    27,    31,     0,
+       0,     0,    17,     0,    19,     0,    29,    22,    36,    37,
+      38,     0,    39,    40,    41,    13,     0,     0,     0,     0,
+       0,    47,    28,    30,    20,    68,    51,    52,    53,    54,
+      55,    56,     0,     0,    16,     0,    18,    21,    58,    59,
+      60,    61,    62,    63,     0,     0,     0,    49,     0,    15,
+       0,    42,     0,     0,    46,     0,    70,     0,    24,    25,
+      23,     0,    48,    50,     8,     0,    12,    65,     0,     0,
+      31,     0,    67,    66,     0,    15,    43,    45,     0,    70,
+      64,    14,    47,    69,     0,     0,    44
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-     -83,   -83,   -83,    34,   -83,   -83,   -83,     7,    -8,   -83,
-     -64,   -82,   -83,    12,   -40,   -83,   -49,   -58,   -18,   -83,
-     -53,   -83,   -83,   -83,    24,   -83,   -83,   -83,   -83,   -83,
-     -83,   -48
+     -91,   -91,   -91,    50,   -91,   -91,   -91,     7,    -8,   -91,
+     -45,   -90,   -91,    27,   -43,   -91,   -50,   -36,   -17,   -91,
+     -47,   -91,   -91,   -91,    37,   -91,   -91,   -91,   -91,   -91,
+     -91,   -41
   };
 
   const signed char
   parser::yydefgoto_[] =
   {
-      -1,     2,     3,     4,     5,     6,     7,    28,    46,    77,
-      95,    13,    30,    31,    32,    33,    34,    51,    35,    36,
-      84,    37,    38,    39,    74,    40,    75,    41,    42,    43,
-      86,   101
+      -1,     2,     3,     4,     5,     6,     7,    29,    47,    78,
+      96,    13,    31,    32,    33,    34,    35,    52,    36,    37,
+      85,    38,    39,    40,    75,    41,    76,    42,    43,    44,
+      87,   102
   };
 
   const signed char
   parser::yytable_[] =
   {
-      15,    83,    47,    29,    78,    11,     1,     8,     9,    52,
-      14,    44,     8,    48,    49,   105,   106,    64,    66,    50,
-      53,    54,    76,    63,    79,    29,    12,    45,    93,    94,
-      81,    82,   115,    99,   102,   111,    85,    11,   114,    10,
-     110,   107,    29,    87,    88,    65,    89,    14,    16,    17,
-      18,    19,    20,    62,   104,    90,    91,    92,   113,     0,
-     112,    96,    83,    21,     0,     0,     0,     0,    22,    23,
-      24,    25,    26,    27,    14,    16,    17,    18,    19,    20,
-       0,    52,   108,     1,     0,   109,     0,     0,     0,     0,
-      21,    14,    16,    17,    18,    19,    20,     0,    25,    26,
-      27,     0,    54,    29,     0,     0,     0,    21,     0,     0,
-       1,     0,    55,    56,    57,    58,    59,    60,     0,     0,
-       0,     0,     0,     0,     0,     0,    80,     1,    61,    67,
-      68,    69,    70,    71,    72,    55,    56,    57,    58,    59,
-      60,     0,     0,     0,     0,     0,     0,     0,    97,     0,
-      73,    67,    68,    69,    70,    71,    72,    55,    56,    57,
-      58,    59,    60,     0,     0,     0,     0,     0,     0,     0,
-      98,     0,    73,    67,    68,    69,    70,    71,    72,    55,
-      56,    57,    58,    59,    60,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    73,    67,    68,    69,    70,    71,
-      72,    55,    56,    57,    58,    59,    60,     0,     0,     0,
-       0,     0,     0,   100,     0,     0,    73,    67,    68,    69,
-      70,    71,    72,    55,    56,    57,    58,    59,    60,     0,
-       0,     0,     0,     0,     0,     0,     0,   103,    73,    67,
-      68,    69,    70,    71,    72,    55,    56,    57,    58,    59,
-      60,    14,    16,    17,    18,    19,    20,     0,     0,     0,
-      73,     0,     0,     0,     0,     0,     0,    21
+      15,    84,    79,    30,    48,     1,    11,     8,   106,   107,
+      14,    53,     8,     9,    45,    16,    17,    18,    19,    20,
+      21,    54,    49,   -10,    77,   116,    30,    12,    46,   -10,
+      50,    22,    82,    83,    51,    64,    67,    65,    86,    26,
+      27,    28,    80,    30,    55,    88,    89,    94,    90,    95,
+     103,   115,   105,    11,   100,    10,   112,    91,    92,    93,
+     111,    66,    84,    97,   108,   114,     0,    63,   113,    16,
+      17,    18,    19,    20,    21,     0,     0,     0,     0,     0,
+       0,     0,     0,    53,   109,    22,    55,   110,     0,     0,
+      23,    24,    25,    26,    27,    28,    56,    57,    58,    59,
+      60,    61,     0,     0,    30,     0,     0,     0,     0,     0,
+      81,     0,    62,    68,    69,    70,    71,    72,    73,    56,
+      57,    58,    59,    60,    61,     0,     0,     0,     0,     0,
+       0,     0,    98,     0,    74,    68,    69,    70,    71,    72,
+      73,    56,    57,    58,    59,    60,    61,     0,     0,     0,
+       0,     0,     0,     0,    99,     0,    74,    68,    69,    70,
+      71,    72,    73,    56,    57,    58,    59,    60,    61,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    74,    68,
+      69,    70,    71,    72,    73,    56,    57,    58,    59,    60,
+      61,     0,     0,     0,     0,     0,     0,   101,     0,     0,
+      74,    68,    69,    70,    71,    72,    73,    56,    57,    58,
+      59,    60,    61,     0,     0,     0,     0,     0,     0,     0,
+       0,   104,    74,    68,    69,    70,    71,    72,    73,    56,
+      57,    58,    59,    60,    61,    16,    17,    18,    19,    20,
+      21,     0,     0,     0,    74,    14,    17,    18,    19,    20,
+      21,    22,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    22
   };
 
   const signed char
   parser::yycheck_[] =
   {
-       8,    50,    20,    11,    44,    12,    41,     0,     0,    27,
-       5,    10,     5,    10,    10,    97,    98,    36,    33,    10,
-      28,    10,    40,    13,    11,    33,    33,    20,    11,    32,
-      48,    49,   114,    33,    11,    33,    54,    12,    11,     5,
-     104,    99,    50,    61,    62,    33,    64,     5,     6,     7,
-       8,     9,    10,    29,    94,    73,    74,    75,   111,    -1,
-     108,    79,   111,    21,    -1,    -1,    -1,    -1,    26,    27,
-      28,    29,    30,    31,     5,     6,     7,     8,     9,    10,
-      -1,    99,   100,    41,    -1,   103,    -1,    -1,    -1,    -1,
-      21,     5,     6,     7,     8,     9,    10,    -1,    29,    30,
-      31,    -1,    10,   111,    -1,    -1,    -1,    21,    -1,    -1,
-      41,    -1,    20,    21,    22,    23,    24,    25,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    11,    41,    36,    14,
+       8,    51,    45,    11,    21,     5,    12,     0,    98,    99,
+       5,    28,     5,     0,    10,     5,     6,     7,     8,     9,
+      10,    29,    10,     5,    41,   115,    34,    33,    21,    11,
+      10,    21,    49,    50,    10,    13,    33,    36,    55,    29,
+      30,    31,    11,    51,    10,    62,    63,    11,    65,    32,
+      11,    11,    95,    12,    33,     5,    33,    74,    75,    76,
+     105,    34,   112,    80,   100,   112,    -1,    30,   109,     5,
+       6,     7,     8,     9,    10,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   100,   101,    21,    10,   104,    -1,    -1,
+      26,    27,    28,    29,    30,    31,    20,    21,    22,    23,
+      24,    25,    -1,    -1,   112,    -1,    -1,    -1,    -1,    -1,
+      11,    -1,    36,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    11,    -1,    35,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    11,    -1,    35,    14,    15,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    35,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    11,    -1,
+      25,    -1,    -1,    -1,    -1,    -1,    -1,    32,    -1,    -1,
       35,    14,    15,    16,    17,    18,    19,    20,    21,    22,
       23,    24,    25,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      11,    -1,    35,    14,    15,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    35,    14,    15,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    -1,    -1,    -1,
-      -1,    -1,    -1,    32,    -1,    -1,    35,    14,    15,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    34,    35,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,     5,     6,     7,     8,     9,    10,    -1,    -1,    -1,
-      35,    -1,    -1,    -1,    -1,    -1,    -1,    21
+      -1,    34,    35,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,     5,     6,     7,     8,     9,
+      10,    -1,    -1,    -1,    35,     5,     6,     7,     8,     9,
+      10,    21,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    21
   };
 
   const signed char
   parser::yystos_[] =
   {
-       0,    41,    47,    48,    49,    50,    51,    52,    53,     0,
-      49,    12,    33,    57,     5,    54,     6,     7,     8,     9,
-      10,    21,    26,    27,    28,    29,    30,    31,    53,    54,
-      58,    59,    60,    61,    62,    64,    65,    67,    68,    69,
-      71,    73,    74,    75,    10,    53,    54,    64,    10,    10,
-      10,    63,    64,    54,    10,    20,    21,    22,    23,    24,
-      25,    36,    70,    13,    36,    59,    33,    14,    15,    16,
-      17,    18,    19,    35,    70,    72,    64,    55,    60,    11,
-      11,    64,    64,    62,    66,    64,    76,    64,    64,    64,
-      64,    64,    64,    11,    32,    56,    64,    11,    11,    33,
-      32,    77,    11,    34,    60,    57,    57,    63,    64,    64,
-      56,    33,    77,    66,    11,    57
+       0,     5,    47,    48,    49,    50,    51,    52,    53,     0,
+      49,    12,    33,    57,     5,    54,     5,     6,     7,     8,
+       9,    10,    21,    26,    27,    28,    29,    30,    31,    53,
+      54,    58,    59,    60,    61,    62,    64,    65,    67,    68,
+      69,    71,    73,    74,    75,    10,    53,    54,    64,    10,
+      10,    10,    63,    64,    54,    10,    20,    21,    22,    23,
+      24,    25,    36,    70,    13,    36,    59,    33,    14,    15,
+      16,    17,    18,    19,    35,    70,    72,    64,    55,    60,
+      11,    11,    64,    64,    62,    66,    64,    76,    64,    64,
+      64,    64,    64,    64,    11,    32,    56,    64,    11,    11,
+      33,    32,    77,    11,    34,    60,    57,    57,    63,    64,
+      64,    56,    33,    77,    66,    11,    57
   };
 
   const signed char
@@ -1381,14 +1381,14 @@ namespace yy {
   const unsigned char
   parser::yyrline_[] =
   {
-       0,    98,    98,   100,   102,   103,   105,   106,   108,   110,
-     112,   114,   116,   117,   119,   120,   122,   124,   126,   127,
-     129,   132,   133,   136,   137,   138,   139,   140,   141,   142,
-     145,   146,   152,   153,   154,   155,   156,   157,   158,   159,
-     160,   161,   162,   165,   166,   168,   171,   172,   175,   178,
-     181,   184,   185,   186,   187,   188,   189,   192,   195,   196,
-     197,   198,   199,   200,   202,   205,   207,   210,   211,   213,
-     214
+       0,    99,    99,   101,   103,   104,   106,   107,   109,   111,
+     113,   115,   117,   118,   120,   121,   123,   125,   127,   128,
+     130,   133,   134,   137,   138,   139,   140,   141,   142,   143,
+     146,   147,   153,   154,   155,   156,   157,   158,   159,   160,
+     161,   162,   163,   166,   167,   169,   172,   173,   176,   179,
+     182,   185,   186,   187,   188,   189,   190,   193,   196,   197,
+     198,   199,   200,   201,   203,   206,   208,   211,   212,   214,
+     215
   };
 
   void
@@ -1422,7 +1422,7 @@ namespace yy {
 } // yy
 #line 1424 "parser.cpp"
 
-#line 216 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
+#line 217 "/home/memojigsaw/ece467/ece467-1002654950/src/parser.y"
 
 
 yy::parser::symbol_type yylex(yyscan_t lexer) {

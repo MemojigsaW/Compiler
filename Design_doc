@@ -1,5 +1,12 @@
-PATH=$HOME/ece467/prefix/bin:$PATH
+Only src and CMakeLists.txt required
+build for commandline testing
+cmake-build-debug for clion debugging
+tests for test cases
+mkdir build cd build make for separate build
 
+Set up:
+
+PATH=$HOME/ece467/prefix/bin:$PATH
 path variable is changed, do nto use default cmake, change to right
 /prefix/cmake
 /prefix/c++

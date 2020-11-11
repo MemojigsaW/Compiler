@@ -6,6 +6,7 @@ Terminals unused in grammar
     TOK_minus_assign
     TOK_star_assign
     TOK_slash_assign
+    TOK_type
 
 
 Grammar
@@ -26,7 +27,7 @@ Grammar
 
     8 function_defn: function_decl block
 
-    9 type: TOK_type
+    9 type: TOK_identifier
 
    10 name: TOK_identifier
 
@@ -119,7 +120,7 @@ Terminals, with rules where they appear
     error (256)
     HI <std::string> (258)
     BYE (259)
-    TOK_identifier (260) 10
+    TOK_identifier (260) 9 10
     TOK_integer (261) 33
     TOK_float (262) 34
     TOK_true (263) 31
@@ -155,7 +156,7 @@ Terminals, with rules where they appear
     TOK_minus_assign (293)
     TOK_star_assign (294)
     TOK_slash_assign (295)
-    TOK_type (296) 9
+    TOK_type (296)
     TOK_relop (297)
     TOK_binop (298)
     TOK_unop (299)
@@ -265,7 +266,7 @@ State 0
 
     0 $accept: . root $end
 
-    TOK_type  shift, and go to state 1
+    TOK_identifier  shift, and go to state 1
 
     root           go to state 2
     function_list  go to state 3
@@ -278,7 +279,7 @@ State 0
 
 State 1
 
-    9 type: TOK_type .
+    9 type: TOK_identifier .
 
     $default  reduce using rule 9 (type)
 
@@ -309,7 +310,7 @@ State 5
     3 function_plus: function .
     4              | function . function_plus
 
-    TOK_type  shift, and go to state 1
+    TOK_identifier  shift, and go to state 1
 
     $default  reduce using rule 3 (function_plus)
 
@@ -365,39 +366,38 @@ State 11
 
    15 block: TOK_lbrace . suite TOK_rbrace
 
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
-    TOK_if          shift, and go to state 22
-    TOK_while       shift, and go to state 23
-    TOK_for         shift, and go to state 24
-    TOK_break       shift, and go to state 25
-    TOK_continue    shift, and go to state 26
-    TOK_return      shift, and go to state 27
-    TOK_type        shift, and go to state 1
+    TOK_identifier  shift, and go to state 16
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
+    TOK_if          shift, and go to state 23
+    TOK_while       shift, and go to state 24
+    TOK_for         shift, and go to state 25
+    TOK_break       shift, and go to state 26
+    TOK_continue    shift, and go to state 27
+    TOK_return      shift, and go to state 28
 
     $default  reduce using rule 18 (statement_kleene)
 
-    type                   go to state 28
-    name                   go to state 29
-    suite                  go to state 30
-    statement_kleene       go to state 31
-    declaration            go to state 32
-    statement              go to state 33
-    single_statement       go to state 34
-    expression             go to state 35
-    compound_statement     go to state 36
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    type                   go to state 29
+    name                   go to state 30
+    suite                  go to state 31
+    statement_kleene       go to state 32
+    declaration            go to state 33
+    statement              go to state 34
+    single_statement       go to state 35
+    expression             go to state 36
+    compound_statement     go to state 37
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 12
@@ -425,766 +425,773 @@ State 15
 
     7 function_decl: type name . TOK_lparen parameter_list TOK_rparen
 
-    TOK_lparen  shift, and go to state 44
+    TOK_lparen  shift, and go to state 45
 
 
 State 16
+
+    9 type: TOK_identifier .
+   10 name: TOK_identifier .
+
+    TOK_identifier  reduce using rule 9 (type)
+    TOK_rparen      reduce using rule 9 (type)
+    $default        reduce using rule 10 (name)
+
+
+State 17
 
    33 expression: TOK_integer .
 
     $default  reduce using rule 33 (expression)
 
 
-State 17
+State 18
 
    34 expression: TOK_float .
 
     $default  reduce using rule 34 (expression)
 
 
-State 18
+State 19
 
    31 expression: TOK_true .
 
     $default  reduce using rule 31 (expression)
 
 
-State 19
+State 20
 
    32 expression: TOK_false .
 
     $default  reduce using rule 32 (expression)
 
 
-State 20
+State 21
 
    41 expression: TOK_lparen . expression TOK_rparen
    64 cast_expression: TOK_lparen . type TOK_rparen expression
 
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
-    TOK_type        shift, and go to state 1
+    TOK_identifier  shift, and go to state 16
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    type                   go to state 45
-    name                   go to state 46
-    expression             go to state 47
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    type                   go to state 46
+    name                   go to state 47
+    expression             go to state 48
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
-State 21
+State 22
 
    56 unary_op: TOK_minus .
 
     $default  reduce using rule 56 (unary_op)
 
 
-State 22
-
-   42 compound_statement: TOK_if . TOK_lparen expression TOK_rparen block
-
-    TOK_lparen  shift, and go to state 48
-
-
 State 23
 
-   44 compound_statement: TOK_while . TOK_lparen expression TOK_rparen block
+   42 compound_statement: TOK_if . TOK_lparen expression TOK_rparen block
 
     TOK_lparen  shift, and go to state 49
 
 
 State 24
 
-   43 compound_statement: TOK_for . TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block
+   44 compound_statement: TOK_while . TOK_lparen expression TOK_rparen block
 
     TOK_lparen  shift, and go to state 50
 
 
 State 25
 
+   43 compound_statement: TOK_for . TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block
+
+    TOK_lparen  shift, and go to state 51
+
+
+State 26
+
    25 single_statement: TOK_break .
 
     $default  reduce using rule 25 (single_statement)
 
 
-State 26
+State 27
 
    26 single_statement: TOK_continue .
 
     $default  reduce using rule 26 (single_statement)
 
 
-State 27
+State 28
 
    27 single_statement: TOK_return . expression_question
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
     $default  reduce using rule 30 (expression_question)
 
-    name                   go to state 46
-    expression_question    go to state 51
-    expression             go to state 52
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    name                   go to state 47
+    expression_question    go to state 52
+    expression             go to state 53
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
-State 28
+State 29
 
    19 declaration: type . name
 
     TOK_identifier  shift, and go to state 14
 
-    name  go to state 53
+    name  go to state 54
 
 
-State 29
+State 30
 
    23 single_statement: name . TOK_assign expression
    24                 | name . binary_op expression
    65 function_call: name . TOK_lparen _ece TOK_rparen
 
-    TOK_lparen   shift, and go to state 54
-    TOK_plus     shift, and go to state 55
-    TOK_minus    shift, and go to state 56
-    TOK_star     shift, and go to state 57
-    TOK_slash    shift, and go to state 58
-    TOK_log_and  shift, and go to state 59
-    TOK_log_or   shift, and go to state 60
-    TOK_assign   shift, and go to state 61
+    TOK_lparen   shift, and go to state 55
+    TOK_plus     shift, and go to state 56
+    TOK_minus    shift, and go to state 57
+    TOK_star     shift, and go to state 58
+    TOK_slash    shift, and go to state 59
+    TOK_log_and  shift, and go to state 60
+    TOK_log_or   shift, and go to state 61
+    TOK_assign   shift, and go to state 62
 
-    binary_op  go to state 62
-
-
-State 30
-
-   15 block: TOK_lbrace suite . TOK_rbrace
-
-    TOK_rbrace  shift, and go to state 63
+    binary_op  go to state 63
 
 
 State 31
+
+   15 block: TOK_lbrace suite . TOK_rbrace
+
+    TOK_rbrace  shift, and go to state 64
+
+
+State 32
 
    16 suite: statement_kleene .
 
     $default  reduce using rule 16 (suite)
 
 
-State 32
+State 33
 
    22 single_statement: declaration . TOK_assign expression
 
-    TOK_assign  shift, and go to state 64
-
-
-State 33
-
-   17 statement_kleene: statement . statement_kleene
-
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
-    TOK_if          shift, and go to state 22
-    TOK_while       shift, and go to state 23
-    TOK_for         shift, and go to state 24
-    TOK_break       shift, and go to state 25
-    TOK_continue    shift, and go to state 26
-    TOK_return      shift, and go to state 27
-    TOK_type        shift, and go to state 1
-
-    $default  reduce using rule 18 (statement_kleene)
-
-    type                   go to state 28
-    name                   go to state 29
-    statement_kleene       go to state 65
-    declaration            go to state 32
-    statement              go to state 33
-    single_statement       go to state 34
-    expression             go to state 35
-    compound_statement     go to state 36
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    TOK_assign  shift, and go to state 65
 
 
 State 34
 
-   20 statement: single_statement . TOK_semicolon
+   17 statement_kleene: statement . statement_kleene
 
-    TOK_semicolon  shift, and go to state 66
+    TOK_identifier  shift, and go to state 16
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
+    TOK_if          shift, and go to state 23
+    TOK_while       shift, and go to state 24
+    TOK_for         shift, and go to state 25
+    TOK_break       shift, and go to state 26
+    TOK_continue    shift, and go to state 27
+    TOK_return      shift, and go to state 28
+
+    $default  reduce using rule 18 (statement_kleene)
+
+    type                   go to state 29
+    name                   go to state 30
+    statement_kleene       go to state 66
+    declaration            go to state 33
+    statement              go to state 34
+    single_statement       go to state 35
+    expression             go to state 36
+    compound_statement     go to state 37
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 35
+
+   20 statement: single_statement . TOK_semicolon
+
+    TOK_semicolon  shift, and go to state 67
+
+
+State 36
 
    28 single_statement: expression .
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
     $default  reduce using rule 28 (single_statement)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 36
+State 37
 
    21 statement: compound_statement .
 
     $default  reduce using rule 21 (statement)
 
 
-State 37
+State 38
 
    35 expression: binary_expression .
 
     $default  reduce using rule 35 (expression)
 
 
-State 38
+State 39
 
    36 expression: unary_expression .
 
     $default  reduce using rule 36 (expression)
 
 
-State 39
+State 40
 
    37 expression: relational_expression .
 
     $default  reduce using rule 37 (expression)
 
 
-State 40
+State 41
 
    48 unary_expression: unary_op . expression
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
-    expression             go to state 76
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    name                   go to state 47
+    expression             go to state 77
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
-State 41
+State 42
 
    38 expression: ternary_expression .
 
     $default  reduce using rule 38 (expression)
 
 
-State 42
+State 43
 
    39 expression: cast_expression .
 
     $default  reduce using rule 39 (expression)
 
 
-State 43
+State 44
 
    40 expression: function_call .
 
     $default  reduce using rule 40 (expression)
 
 
-State 44
+State 45
 
     7 function_decl: type name TOK_lparen . parameter_list TOK_rparen
 
-    TOK_type  shift, and go to state 1
+    TOK_identifier  shift, and go to state 1
 
     $default  reduce using rule 12 (parameter_list)
 
-    type            go to state 28
-    parameter_list  go to state 77
-    declaration     go to state 78
-
-
-State 45
-
-   64 cast_expression: TOK_lparen type . TOK_rparen expression
-
-    TOK_rparen  shift, and go to state 79
+    type            go to state 29
+    parameter_list  go to state 78
+    declaration     go to state 79
 
 
 State 46
 
-   65 function_call: name . TOK_lparen _ece TOK_rparen
+   64 cast_expression: TOK_lparen type . TOK_rparen expression
 
-    TOK_lparen  shift, and go to state 54
+    TOK_rparen  shift, and go to state 80
 
 
 State 47
+
+   65 function_call: name . TOK_lparen _ece TOK_rparen
+
+    TOK_lparen  shift, and go to state 55
+
+
+State 48
 
    41 expression: TOK_lparen expression . TOK_rparen
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_rparen         shift, and go to state 80
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_rparen         shift, and go to state 81
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
-    binary_op      go to state 74
-    relational_op  go to state 75
-
-
-State 48
-
-   42 compound_statement: TOK_if TOK_lparen . expression TOK_rparen block
-
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
-
-    name                   go to state 46
-    expression             go to state 81
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
 State 49
 
-   44 compound_statement: TOK_while TOK_lparen . expression TOK_rparen block
+   42 compound_statement: TOK_if TOK_lparen . expression TOK_rparen block
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
+    name                   go to state 47
     expression             go to state 82
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 50
 
-   43 compound_statement: TOK_for TOK_lparen . single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block
+   44 compound_statement: TOK_while TOK_lparen . expression TOK_rparen block
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
-    TOK_break       shift, and go to state 25
-    TOK_continue    shift, and go to state 26
-    TOK_return      shift, and go to state 27
-    TOK_type        shift, and go to state 1
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    $default  reduce using rule 46 (single_statement_question)
-
-    type                       go to state 28
-    name                       go to state 29
-    declaration                go to state 32
-    single_statement           go to state 83
-    expression                 go to state 35
-    single_statement_question  go to state 84
-    binary_expression          go to state 37
-    unary_expression           go to state 38
-    relational_expression      go to state 39
-    unary_op                   go to state 40
-    ternary_expression         go to state 41
-    cast_expression            go to state 42
-    function_call              go to state 43
+    name                   go to state 47
+    expression             go to state 83
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 51
+
+   43 compound_statement: TOK_for TOK_lparen . single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block
+
+    TOK_identifier  shift, and go to state 16
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
+    TOK_break       shift, and go to state 26
+    TOK_continue    shift, and go to state 27
+    TOK_return      shift, and go to state 28
+
+    $default  reduce using rule 46 (single_statement_question)
+
+    type                       go to state 29
+    name                       go to state 30
+    declaration                go to state 33
+    single_statement           go to state 84
+    expression                 go to state 36
+    single_statement_question  go to state 85
+    binary_expression          go to state 38
+    unary_expression           go to state 39
+    relational_expression      go to state 40
+    unary_op                   go to state 41
+    ternary_expression         go to state 42
+    cast_expression            go to state 43
+    function_call              go to state 44
+
+
+State 52
 
    27 single_statement: TOK_return expression_question .
 
     $default  reduce using rule 27 (single_statement)
 
 
-State 52
+State 53
 
    29 expression_question: expression .
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
     $default  reduce using rule 29 (expression_question)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 53
+State 54
 
    19 declaration: type name .
 
     $default  reduce using rule 19 (declaration)
 
 
-State 54
+State 55
 
    65 function_call: name TOK_lparen . _ece TOK_rparen
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
     $default  reduce using rule 67 (_ece)
 
-    name                   go to state 46
-    expression             go to state 85
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
-    _ece                   go to state 86
+    name                   go to state 47
+    expression             go to state 86
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
+    _ece                   go to state 87
 
 
-State 55
+State 56
 
    50 binary_op: TOK_plus .
 
     $default  reduce using rule 50 (binary_op)
 
 
-State 56
+State 57
 
    51 binary_op: TOK_minus .
 
     $default  reduce using rule 51 (binary_op)
 
 
-State 57
+State 58
 
    52 binary_op: TOK_star .
 
     $default  reduce using rule 52 (binary_op)
 
 
-State 58
+State 59
 
    53 binary_op: TOK_slash .
 
     $default  reduce using rule 53 (binary_op)
 
 
-State 59
+State 60
 
    54 binary_op: TOK_log_and .
 
     $default  reduce using rule 54 (binary_op)
 
 
-State 60
+State 61
 
    55 binary_op: TOK_log_or .
 
     $default  reduce using rule 55 (binary_op)
 
 
-State 61
+State 62
 
    23 single_statement: name TOK_assign . expression
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
-    expression             go to state 87
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    name                   go to state 47
+    expression             go to state 88
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
-State 62
+State 63
 
    24 single_statement: name binary_op . expression
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
-    expression             go to state 88
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    name                   go to state 47
+    expression             go to state 89
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
-State 63
+State 64
 
    15 block: TOK_lbrace suite TOK_rbrace .
 
     $default  reduce using rule 15 (block)
 
 
-State 64
+State 65
 
    22 single_statement: declaration TOK_assign . expression
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
-    expression             go to state 89
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    name                   go to state 47
+    expression             go to state 90
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
-State 65
+State 66
 
    17 statement_kleene: statement statement_kleene .
 
     $default  reduce using rule 17 (statement_kleene)
 
 
-State 66
+State 67
 
    20 statement: single_statement TOK_semicolon .
 
     $default  reduce using rule 20 (statement)
 
 
-State 67
+State 68
 
    57 relational_op: TOK_eq .
 
     $default  reduce using rule 57 (relational_op)
 
 
-State 68
+State 69
 
    58 relational_op: TOK_ne .
 
     $default  reduce using rule 58 (relational_op)
 
 
-State 69
+State 70
 
    59 relational_op: TOK_lt .
 
     $default  reduce using rule 59 (relational_op)
 
 
-State 70
+State 71
 
    60 relational_op: TOK_gt .
 
     $default  reduce using rule 60 (relational_op)
 
 
-State 71
+State 72
 
    61 relational_op: TOK_le .
 
     $default  reduce using rule 61 (relational_op)
 
 
-State 72
+State 73
 
    62 relational_op: TOK_ge .
 
     $default  reduce using rule 62 (relational_op)
 
 
-State 73
+State 74
 
    63 ternary_expression: expression TOK_question_mark . expression TOK_colon expression
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
-    expression             go to state 90
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
-
-
-State 74
-
-   47 binary_expression: expression binary_op . expression
-
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
-
-    name                   go to state 46
+    name                   go to state 47
     expression             go to state 91
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 75
 
-   49 relational_expression: expression relational_op . expression
+   47 binary_expression: expression binary_op . expression
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
+    name                   go to state 47
     expression             go to state 92
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 76
+
+   49 relational_expression: expression relational_op . expression
+
+    TOK_identifier  shift, and go to state 14
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
+
+    name                   go to state 47
+    expression             go to state 93
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
+
+
+State 77
 
    47 binary_expression: expression . binary_op expression
    48 unary_expression: unary_op expression .
@@ -1193,268 +1200,268 @@ State 76
 
     $default  reduce using rule 48 (unary_expression)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
-
-
-State 77
-
-    7 function_decl: type name TOK_lparen parameter_list . TOK_rparen
-
-    TOK_rparen  shift, and go to state 93
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
 State 78
 
-   11 parameter_list: declaration . comma_dec_kleene
+    7 function_decl: type name TOK_lparen parameter_list . TOK_rparen
 
-    TOK_comma  shift, and go to state 94
-
-    $default  reduce using rule 14 (comma_dec_kleene)
-
-    comma_dec_kleene  go to state 95
+    TOK_rparen  shift, and go to state 94
 
 
 State 79
 
-   64 cast_expression: TOK_lparen type TOK_rparen . expression
+   11 parameter_list: declaration . comma_dec_kleene
 
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_comma  shift, and go to state 95
 
-    name                   go to state 46
-    expression             go to state 96
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    $default  reduce using rule 14 (comma_dec_kleene)
+
+    comma_dec_kleene  go to state 96
 
 
 State 80
+
+   64 cast_expression: TOK_lparen type TOK_rparen . expression
+
+    TOK_identifier  shift, and go to state 14
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
+
+    name                   go to state 47
+    expression             go to state 97
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
+
+
+State 81
 
    41 expression: TOK_lparen expression TOK_rparen .
 
     $default  reduce using rule 41 (expression)
 
 
-State 81
+State 82
 
    42 compound_statement: TOK_if TOK_lparen expression . TOK_rparen block
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_rparen         shift, and go to state 97
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_rparen         shift, and go to state 98
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 82
+State 83
 
    44 compound_statement: TOK_while TOK_lparen expression . TOK_rparen block
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_rparen         shift, and go to state 98
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_rparen         shift, and go to state 99
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 83
+State 84
 
    45 single_statement_question: single_statement .
 
     $default  reduce using rule 45 (single_statement_question)
 
 
-State 84
+State 85
 
    43 compound_statement: TOK_for TOK_lparen single_statement_question . TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block
 
-    TOK_semicolon  shift, and go to state 99
+    TOK_semicolon  shift, and go to state 100
 
 
-State 85
+State 86
 
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
    66 _ece: expression . _ecee
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_comma          shift, and go to state 100
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_comma          shift, and go to state 101
+    TOK_question_mark  shift, and go to state 74
 
     $default  reduce using rule 69 (_ecee)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
-    _ecee          go to state 101
-
-
-State 86
-
-   65 function_call: name TOK_lparen _ece . TOK_rparen
-
-    TOK_rparen  shift, and go to state 102
+    binary_op      go to state 75
+    relational_op  go to state 76
+    _ecee          go to state 102
 
 
 State 87
+
+   65 function_call: name TOK_lparen _ece . TOK_rparen
+
+    TOK_rparen  shift, and go to state 103
+
+
+State 88
 
    23 single_statement: name TOK_assign expression .
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
     $default  reduce using rule 23 (single_statement)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 88
+State 89
 
    24 single_statement: name binary_op expression .
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
     $default  reduce using rule 24 (single_statement)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 89
+State 90
 
    22 single_statement: declaration TOK_assign expression .
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
 
     $default  reduce using rule 22 (single_statement)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 90
+State 91
 
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
    63                   | expression TOK_question_mark expression . TOK_colon expression
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_colon          shift, and go to state 103
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_colon          shift, and go to state 104
+    TOK_question_mark  shift, and go to state 74
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 91
+State 92
 
    47 binary_expression: expression . binary_op expression
    47                  | expression binary_op expression .
@@ -1463,11 +1470,11 @@ State 91
 
     $default  reduce using rule 47 (binary_expression)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 92
+State 93
 
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
@@ -1476,35 +1483,35 @@ State 92
 
     $default  reduce using rule 49 (relational_expression)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
-State 93
+State 94
 
     7 function_decl: type name TOK_lparen parameter_list TOK_rparen .
 
     $default  reduce using rule 7 (function_decl)
 
 
-State 94
+State 95
 
    13 comma_dec_kleene: TOK_comma . declaration comma_dec_kleene
 
-    TOK_type  shift, and go to state 1
+    TOK_identifier  shift, and go to state 1
 
-    type         go to state 28
-    declaration  go to state 104
+    type         go to state 29
+    declaration  go to state 105
 
 
-State 95
+State 96
 
    11 parameter_list: declaration comma_dec_kleene .
 
     $default  reduce using rule 11 (parameter_list)
 
 
-State 96
+State 97
 
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
@@ -1513,22 +1520,13 @@ State 96
 
     $default  reduce using rule 64 (cast_expression)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
-
-
-State 97
-
-   42 compound_statement: TOK_if TOK_lparen expression TOK_rparen . block
-
-    TOK_lbrace  shift, and go to state 11
-
-    block  go to state 105
+    binary_op      go to state 75
+    relational_op  go to state 76
 
 
 State 98
 
-   44 compound_statement: TOK_while TOK_lparen expression TOK_rparen . block
+   42 compound_statement: TOK_if TOK_lparen expression TOK_rparen . block
 
     TOK_lbrace  shift, and go to state 11
 
@@ -1537,149 +1535,129 @@ State 98
 
 State 99
 
-   43 compound_statement: TOK_for TOK_lparen single_statement_question TOK_semicolon . expression_question TOK_semicolon single_statement_question TOK_rparen block
+   44 compound_statement: TOK_while TOK_lparen expression TOK_rparen . block
 
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_lbrace  shift, and go to state 11
 
-    $default  reduce using rule 30 (expression_question)
-
-    name                   go to state 46
-    expression_question    go to state 107
-    expression             go to state 52
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    block  go to state 107
 
 
 State 100
 
-   68 _ecee: TOK_comma . expression _ecee
+   43 compound_statement: TOK_for TOK_lparen single_statement_question TOK_semicolon . expression_question TOK_semicolon single_statement_question TOK_rparen block
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
-    expression             go to state 108
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
+    $default  reduce using rule 30 (expression_question)
+
+    name                   go to state 47
+    expression_question    go to state 108
+    expression             go to state 53
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 101
+
+   68 _ecee: TOK_comma . expression _ecee
+
+    TOK_identifier  shift, and go to state 14
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
+
+    name                   go to state 47
+    expression             go to state 109
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
+
+
+State 102
 
    66 _ece: expression _ecee .
 
     $default  reduce using rule 66 (_ece)
 
 
-State 102
+State 103
 
    65 function_call: name TOK_lparen _ece TOK_rparen .
 
     $default  reduce using rule 65 (function_call)
 
 
-State 103
+State 104
 
    63 ternary_expression: expression TOK_question_mark expression TOK_colon . expression
 
     TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
 
-    name                   go to state 46
-    expression             go to state 109
-    binary_expression      go to state 37
-    unary_expression       go to state 38
-    relational_expression  go to state 39
-    unary_op               go to state 40
-    ternary_expression     go to state 41
-    cast_expression        go to state 42
-    function_call          go to state 43
-
-
-State 104
-
-   13 comma_dec_kleene: TOK_comma declaration . comma_dec_kleene
-
-    TOK_comma  shift, and go to state 94
-
-    $default  reduce using rule 14 (comma_dec_kleene)
-
-    comma_dec_kleene  go to state 110
+    name                   go to state 47
+    expression             go to state 110
+    binary_expression      go to state 38
+    unary_expression       go to state 39
+    relational_expression  go to state 40
+    unary_op               go to state 41
+    ternary_expression     go to state 42
+    cast_expression        go to state 43
+    function_call          go to state 44
 
 
 State 105
+
+   13 comma_dec_kleene: TOK_comma declaration . comma_dec_kleene
+
+    TOK_comma  shift, and go to state 95
+
+    $default  reduce using rule 14 (comma_dec_kleene)
+
+    comma_dec_kleene  go to state 111
+
+
+State 106
 
    42 compound_statement: TOK_if TOK_lparen expression TOK_rparen block .
 
     $default  reduce using rule 42 (compound_statement)
 
 
-State 106
+State 107
 
    44 compound_statement: TOK_while TOK_lparen expression TOK_rparen block .
 
     $default  reduce using rule 44 (compound_statement)
 
 
-State 107
+State 108
 
    43 compound_statement: TOK_for TOK_lparen single_statement_question TOK_semicolon expression_question . TOK_semicolon single_statement_question TOK_rparen block
 
-    TOK_semicolon  shift, and go to state 111
-
-
-State 108
-
-   47 binary_expression: expression . binary_op expression
-   49 relational_expression: expression . relational_op expression
-   63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
-   68 _ecee: TOK_comma expression . _ecee
-
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_comma          shift, and go to state 100
-    TOK_question_mark  shift, and go to state 73
-
-    $default  reduce using rule 69 (_ecee)
-
-    binary_op      go to state 74
-    relational_op  go to state 75
-    _ecee          go to state 112
+    TOK_semicolon  shift, and go to state 112
 
 
 State 109
@@ -1687,92 +1665,120 @@ State 109
    47 binary_expression: expression . binary_op expression
    49 relational_expression: expression . relational_op expression
    63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
-   63                   | expression TOK_question_mark expression TOK_colon expression .
+   68 _ecee: TOK_comma expression . _ecee
 
-    TOK_eq             shift, and go to state 67
-    TOK_ne             shift, and go to state 68
-    TOK_lt             shift, and go to state 69
-    TOK_gt             shift, and go to state 70
-    TOK_le             shift, and go to state 71
-    TOK_ge             shift, and go to state 72
-    TOK_plus           shift, and go to state 55
-    TOK_minus          shift, and go to state 56
-    TOK_star           shift, and go to state 57
-    TOK_slash          shift, and go to state 58
-    TOK_log_and        shift, and go to state 59
-    TOK_log_or         shift, and go to state 60
-    TOK_question_mark  shift, and go to state 73
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_comma          shift, and go to state 101
+    TOK_question_mark  shift, and go to state 74
 
-    $default  reduce using rule 63 (ternary_expression)
+    $default  reduce using rule 69 (_ecee)
 
-    binary_op      go to state 74
-    relational_op  go to state 75
+    binary_op      go to state 75
+    relational_op  go to state 76
+    _ecee          go to state 113
 
 
 State 110
+
+   47 binary_expression: expression . binary_op expression
+   49 relational_expression: expression . relational_op expression
+   63 ternary_expression: expression . TOK_question_mark expression TOK_colon expression
+   63                   | expression TOK_question_mark expression TOK_colon expression .
+
+    TOK_eq             shift, and go to state 68
+    TOK_ne             shift, and go to state 69
+    TOK_lt             shift, and go to state 70
+    TOK_gt             shift, and go to state 71
+    TOK_le             shift, and go to state 72
+    TOK_ge             shift, and go to state 73
+    TOK_plus           shift, and go to state 56
+    TOK_minus          shift, and go to state 57
+    TOK_star           shift, and go to state 58
+    TOK_slash          shift, and go to state 59
+    TOK_log_and        shift, and go to state 60
+    TOK_log_or         shift, and go to state 61
+    TOK_question_mark  shift, and go to state 74
+
+    $default  reduce using rule 63 (ternary_expression)
+
+    binary_op      go to state 75
+    relational_op  go to state 76
+
+
+State 111
 
    13 comma_dec_kleene: TOK_comma declaration comma_dec_kleene .
 
     $default  reduce using rule 13 (comma_dec_kleene)
 
 
-State 111
+State 112
 
    43 compound_statement: TOK_for TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon . single_statement_question TOK_rparen block
 
-    TOK_identifier  shift, and go to state 14
-    TOK_integer     shift, and go to state 16
-    TOK_float       shift, and go to state 17
-    TOK_true        shift, and go to state 18
-    TOK_false       shift, and go to state 19
-    TOK_lparen      shift, and go to state 20
-    TOK_minus       shift, and go to state 21
-    TOK_break       shift, and go to state 25
-    TOK_continue    shift, and go to state 26
-    TOK_return      shift, and go to state 27
-    TOK_type        shift, and go to state 1
+    TOK_identifier  shift, and go to state 16
+    TOK_integer     shift, and go to state 17
+    TOK_float       shift, and go to state 18
+    TOK_true        shift, and go to state 19
+    TOK_false       shift, and go to state 20
+    TOK_lparen      shift, and go to state 21
+    TOK_minus       shift, and go to state 22
+    TOK_break       shift, and go to state 26
+    TOK_continue    shift, and go to state 27
+    TOK_return      shift, and go to state 28
 
     $default  reduce using rule 46 (single_statement_question)
 
-    type                       go to state 28
-    name                       go to state 29
-    declaration                go to state 32
-    single_statement           go to state 83
-    expression                 go to state 35
-    single_statement_question  go to state 113
-    binary_expression          go to state 37
-    unary_expression           go to state 38
-    relational_expression      go to state 39
-    unary_op                   go to state 40
-    ternary_expression         go to state 41
-    cast_expression            go to state 42
-    function_call              go to state 43
+    type                       go to state 29
+    name                       go to state 30
+    declaration                go to state 33
+    single_statement           go to state 84
+    expression                 go to state 36
+    single_statement_question  go to state 114
+    binary_expression          go to state 38
+    unary_expression           go to state 39
+    relational_expression      go to state 40
+    unary_op                   go to state 41
+    ternary_expression         go to state 42
+    cast_expression            go to state 43
+    function_call              go to state 44
 
 
-State 112
+State 113
 
    68 _ecee: TOK_comma expression _ecee .
 
     $default  reduce using rule 68 (_ecee)
 
 
-State 113
+State 114
 
    43 compound_statement: TOK_for TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question . TOK_rparen block
 
-    TOK_rparen  shift, and go to state 114
+    TOK_rparen  shift, and go to state 115
 
 
-State 114
+State 115
 
    43 compound_statement: TOK_for TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen . block
 
     TOK_lbrace  shift, and go to state 11
 
-    block  go to state 115
+    block  go to state 116
 
 
-State 115
+State 116
 
    43 compound_statement: TOK_for TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block .
 

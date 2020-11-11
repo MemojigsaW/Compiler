@@ -41,6 +41,7 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %verbose
 %define api.value.type variant
 %define api.token.constructor
+//todo enable in lab 3
 //%define api.value.automove
 %define parse.trace
 %define parse.assert
@@ -109,7 +110,7 @@ function_decl:	type name TOK_lparen parameter_list TOK_rparen {TRACEPARSE("funct
 	;
 function_defn:	function_decl block								{TRACEPARSE("function_defn->function_decl block	");}
 	;
-type:	TOK_type 							{TRACEPARSE("type->TOK_type");}
+type:	TOK_identifier							{TRACEPARSE("type->TOK_identifier");}
 	;
 name:	TOK_identifier 							{TRACEPARSE("name->TOK_identifier");}
 	;
