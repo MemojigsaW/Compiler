@@ -110,7 +110,7 @@ function_decl:	type name TOK_lparen parameter_list TOK_rparen {TRACEPARSE("funct
 	;
 function_defn:	function_decl block								{TRACEPARSE("function_defn->function_decl block	");}
 	;
-type:	TOK_identifier							{TRACEPARSE("type->TOK_identifier");}
+type:	TOK_type							{TRACEPARSE("type->TOK_type");}
 	;
 name:	TOK_identifier 							{TRACEPARSE("name->TOK_identifier");}
 	;
@@ -136,7 +136,8 @@ statement:	single_statement TOK_semicolon		{TRACEPARSE("statement->single_statem
 	
 single_statement:	declaration TOK_assign expression	{TRACEPARSE("single_statement->declaration TOK_assign expression");}
 	|	name TOK_assign expression						{TRACEPARSE("single_statement->name TOK_assign expression");}
-	|	name binary_op expression						{TRACEPARSE("single_statement->name binary_op expression");}
+	/* |	name binary_op expression						{TRACEPARSE("single_statement->name binary_op expression");} */
+	|	name augmented_assign expression				{TRACEPARSE("single_statement->name augmented_assign expression");}
 	|	TOK_break										{TRACEPARSE("single_statement->TOK_break");}
 	|	TOK_continue									{TRACEPARSE("single_statement->TOK_continue");}
 	|	TOK_return expression_question					{TRACEPARSE("single_statement->TOK_return expression_question");}
@@ -148,9 +149,8 @@ expression_question:	expression 						{TRACEPARSE("expression_question->expressi
 	;
 	
 expression
-	/*Not supporting identifier operations becase name and type have conflict in with id
-	 * Will be fixed in lab 3*/
-	:	TOK_true 										{TRACEPARSE("expression->TOK_true");}
+	:	name											{TRACEPARSE("expression->name");}
+	|	TOK_true 										{TRACEPARSE("expression->TOK_true");}
 	|	TOK_false										{TRACEPARSE("expression->TOK_false");}
 	|	TOK_integer										{TRACEPARSE("expression->TOK_integer");}
 	|	TOK_float										{TRACEPARSE("expression->TOK_float");}
@@ -207,13 +207,20 @@ cast_expression:	TOK_lparen	type TOK_rparen	expression	{TRACEPARSE("cast_express
 	;
 function_call:	name TOK_lparen _ece TOK_rparen	{TRACEPARSE("function_call->name TOK_lparen _ece TOK_rparen");}
 	;
-
+/* ece is (expression (comma expression)*)?  */
 _ece:	expression _ecee	{TRACEPARSE("_ece->expression _ecee");}
 	|	/*empty*/	{TRACEPARSE("_ece->/*empty*/");}
 	;
 _ecee:	TOK_comma expression _ecee	{TRACEPARSE("_ecee->TOK_comma expression _ecee");}
 	|	/*empty*/	{TRACEPARSE("_ecee->/*empty*/");}
 	;
+
+augmented_assign
+	:	TOK_plus_assign	{TRACEPARSE("augmented_assign -> TOK_plus_assign");}
+	|	TOK_minus_assign	{TRACEPARSE("augmented_assign -> TOK_minus_assign");}
+	|	TOK_star_assign	{TRACEPARSE("augmented_assign -> TOK_star_assign");}
+	|	TOK_slash_assign	{TRACEPARSE("augmented_assign -> TOK_slash_assign");}
+
 %%
 
 yy::parser::symbol_type yylex(yyscan_t lexer) {
