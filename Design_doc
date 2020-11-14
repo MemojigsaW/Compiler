@@ -15,6 +15,13 @@ in setting
 Location Tracking:
 make_node function takes care of location of the node 
 
+Scanner:
+    yytext is char sequence from scanner buffer
+    yyleng is the length of the token match
+    pick up string by casting it 
+        std::string{yytext, static_cast<size_t>(yyleng)}
+
+
 AST:
 node types keep track of necessary information, receive from grammar 
 and build tree in bison (.y) with $$...$ references. Create name for each node 
@@ -27,10 +34,16 @@ for printing purposes. Make printing sequential for all right now.
         Since there is no calculation in AST (Lab3) no point of saving the value 
         as it is not updated
 
+    expr:
+        The expr produces different node depending on the production. There is 
+        no evluation of clauses (Lab 3), only constant check. 
+
 
 
 Cpp Classes:
 Inheritance:
+    Parent:
+        Declaring chid with parent class is viable
     Virtual:
         virtual function does not need to be defined in child
         pure virtaul (=0) needs to be defined in child 

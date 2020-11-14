@@ -42,17 +42,17 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %define api.value.type variant
 %define api.token.constructor
 //todo enable in lab 3
-/* %define api.value.automove */
+%define api.value.automove
 %define parse.trace
 %define parse.assert
 
 %token <std::string> HI
 %token BYE
 
-%token TOK_identifier
-%token TOK_integer
-%token TOK_float
-%token TOK_true TOK_false
+%token <std::string>TOK_identifier
+%token <int>TOK_integer
+%token <float>TOK_float
+%token <bool>TOK_true TOK_false
 %token TOK_lparen
 %token TOK_rparen
 %token TOK_lbrace
@@ -95,6 +95,13 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %type <std::unique_ptr<OperatorNode>> augmented_assign_op relational_op unary_op binary_op
 %type <std::unique_ptr<TypeNode>> type
 %type <std::unique_ptr<NameNode>> name
+%type <std::unique_ptr<Node>> expression
+%type <std::unique_ptr<ChainNode>> _ece _ecee
+%type <std::unique_ptr<FunctionCallNode>> function_call
+%type <std::unique_ptr<BinaryExprNode>> binary_expression relational_expression
+%type <std::unique_ptr<UnaryExprNode>> unary_expression
+%type <std::unique_ptr<CastNode>> cast_expression
+%type <std::unique_ptr<TernaryExprNode>> ternary_expression
 
 
 %start root
@@ -127,80 +134,136 @@ suite:	statement_kleene						{TRACEPARSE("suite->statement_kleene");}
 statement_kleene:	statement statement_kleene 	{TRACEPARSE("statement_kleene->statement statement_kleene");}
 	|	/*empty*/								{TRACEPARSE("statement_kleene->/*empty*/");}
 	;
-declaration:	type name						{TRACEPARSE("declaration->type name");}
-	;
 	
 statement:	single_statement TOK_semicolon		{TRACEPARSE("statement->single_statement TOK_semicolon");}
 	|	compound_statement						{TRACEPARSE("statement->compound_statement");}
 	;
-	
-single_statement:	declaration TOK_assign expression	{TRACEPARSE("single_statement->declaration TOK_assign expression");}
-	|	name TOK_assign expression						{TRACEPARSE("single_statement->name TOK_assign expression");}
-	|	name augmented_assign_op expression				{TRACEPARSE("single_statement->name augmented_assign_op expression");}
-	|	TOK_break										{TRACEPARSE("single_statement->TOK_break");}
-	|	TOK_continue									{TRACEPARSE("single_statement->TOK_continue");}
-	|	TOK_return expression_question					{TRACEPARSE("single_statement->TOK_return expression_question");}
-	|	expression										{TRACEPARSE("single_statement->expression");}
-	;
-	
-expression_question:	expression 						{TRACEPARSE("expression_question->expression");}
-	|	/*empty*/										{TRACEPARSE("expression_question->/*empty*/");}
-	;
 		
-compound_statement:	TOK_if	TOK_lparen	expression TOK_rparen	block	{TRACEPARSE("compound_statement->TOK_if	TOK_lparen	expression TOK_rparen	block");}
+compound_statement
+	:	TOK_if	TOK_lparen	expression TOK_rparen	block	
+	{TRACEPARSE("compound_statement->TOK_if	TOK_lparen	expression TOK_rparen	block");}
 	|	TOK_for	TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block
 	{TRACEPARSE("compound_statement->TOK_for	TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block");}
-	|	TOK_while	TOK_lparen	expression TOK_rparen block	{TRACEPARSE("compound_statement->TOK_while	TOK_lparen	expression TOK_rparen block");}
+	|	TOK_while	TOK_lparen	expression TOK_rparen block	
+	{TRACEPARSE("compound_statement->TOK_while	TOK_lparen	expression TOK_rparen block");}
 	;
 
-single_statement_question:	single_statement	{TRACEPARSE("single_statement_question->single_statement");}
-	| /*empty*/									{TRACEPARSE("single_statement->/*empty*/");}
+single_statement_question
+	:	single_statement	
+	{TRACEPARSE("single_statement_question->single_statement");}
+	| /*empty*/									
+	{TRACEPARSE("single_statement->/*empty*/");}
 	;
-	
-binary_expression:	expression binary_op expression %prec TOK_binop	{TRACEPARSE("binary_expression->expression binary_op expression");}
+
+single_statement
+	:	declaration TOK_assign expression	
+	{TRACEPARSE("single_statement->declaration TOK_assign expression");}
+	|	name TOK_assign expression						
+	{TRACEPARSE("single_statement->name TOK_assign expression");}
+	|	name augmented_assign_op expression				
+	{TRACEPARSE("single_statement->name augmented_assign_op expression");}
+	|	TOK_break										
+	{TRACEPARSE("single_statement->TOK_break");}
+	|	TOK_continue									
+	{TRACEPARSE("single_statement->TOK_continue");}
+	|	TOK_return expression_question					
+	{TRACEPARSE("single_statement->TOK_return expression_question");}
+	|	expression										
+	{TRACEPARSE("single_statement->expression");}
 	;
-	
-unary_expression:	unary_op expression %prec TOK_unop		{TRACEPARSE("unary_expression->unary_op expression %prec TOK_unop");}
+
+declaration
+	:	type name						
+	{TRACEPARSE("declaration->type name");}
 	;
-	
-relational_expression:	expression relational_op expression %prec TOK_relop	{TRACEPARSE("relational_expression->expression relational_op expression");}
+
+expression_question
+	:	expression 						
+	{TRACEPARSE("expression_question->expression");}
+	|	/*empty*/										
+	{TRACEPARSE("expression_question->/*empty*/");}
 	;
-	
-ternary_expression:	expression TOK_question_mark expression TOK_colon expression
-{TRACEPARSE("ternary_expression->expression TOK_question_mark expression TOK_colon expression");}
+
+
+ternary_expression
+	:	expression TOK_question_mark expression TOK_colon expression
+	{TRACEPARSE("ternary_expression->expression TOK_question_mark expression TOK_colon expression");
+	$$ = make_node<TernaryExprNode>(@$, std::move($1), std::move($3), std::move($5));}
 	;
-cast_expression:	TOK_lparen	type TOK_rparen	expression	{TRACEPARSE("cast_expression->TOK_lparen	type TOK_rparen	expression");}
+
+cast_expression
+	:	TOK_lparen	type TOK_rparen	expression	
+	{TRACEPARSE("cast_expression->TOK_lparen	type TOK_rparen	expression");
+	$$ = make_node<CastNode>(@$, std::move($2), std::move($4));}
 	;
-function_call:	name TOK_lparen _ece TOK_rparen	{TRACEPARSE("function_call->name TOK_lparen _ece TOK_rparen");}
+
+binary_expression
+	:	expression binary_op expression 
+	{TRACEPARSE("binary_expression->expression binary_op expression"); $$ = make_node<BinaryExprNode>(@$, std::move($1), std::move($2), std::move($3));}
+	;
+
+relational_expression
+	:	expression relational_op expression %prec TOK_relop	
+	{TRACEPARSE("relational_expression->expression relational_op expression");$$ = make_node<BinaryExprNode>(@$, std::move($1), std::move($2), std::move($3));}
+	;
+
+unary_expression
+	:	unary_op expression %prec TOK_unop		
+	{TRACEPARSE("unary_expression->unary_op expression %prec TOK_unop");$$ = make_node<UnaryExprNode>(@$, std::move($1), std::move($2));}
+	;
+
+function_call
+	:	name TOK_lparen _ece TOK_rparen	
+	{TRACEPARSE("function_call->name TOK_lparen _ece TOK_rparen");$$=make_node<FunctionCallNode>(@$, std::move($1), std::move($3));}
 	;
 /* ece is (expression (comma expression)*)?  */
-_ece:	expression _ecee	{TRACEPARSE("_ece->expression _ecee");}
-	|	/*empty*/	{TRACEPARSE("_ece->/*empty*/");}
+_ece
+	:	expression _ecee	
+	{TRACEPARSE("_ece->expression _ecee");$$=make_node<ChainNode>(@$, std::move($1), std::move($2));}
+	|	/*empty*/	
+	{TRACEPARSE("_ece->/*empty*/");$$ = make_node<ChainNode>(@$, nullptr, nullptr);}
 	;
-_ecee:	TOK_comma expression _ecee	{TRACEPARSE("_ecee->TOK_comma expression _ecee");}
-	|	/*empty*/	{TRACEPARSE("_ecee->/*empty*/");}
+
+_ecee
+	:	TOK_comma expression _ecee	
+	{TRACEPARSE("_ecee->TOK_comma expression _ecee");$$ = make_node<ChainNode>(@$, std::move($2), std::move($3));}
+	|	/*empty*/	
+	{TRACEPARSE("_ecee->/*empty*/");$$ = make_node<ChainNode>(@$, nullptr, nullptr);}
 	;
 
 expression
-	:	name											{TRACEPARSE("expression->name");}
-	|	TOK_true 										{TRACEPARSE("expression->TOK_true");}
-	|	TOK_false										{TRACEPARSE("expression->TOK_false");}
-	|	TOK_integer										{TRACEPARSE("expression->TOK_integer");}
-	|	TOK_float										{TRACEPARSE("expression->TOK_float");}
-	|	binary_expression								{TRACEPARSE("expression->binary_expression");}
-	|	unary_expression								{TRACEPARSE("expression->unary_expression");}
-	|	relational_expression							{TRACEPARSE("expression->relational_expression");}
-	|	ternary_expression								{TRACEPARSE("expression->ternary_expression");}
-	|	cast_expression									{TRACEPARSE("expression->cast_expression");}
-	|	function_call									{TRACEPARSE("expression->function_call");}
-	|	TOK_lparen	expression TOK_rparen				{TRACEPARSE("expression->TOK_lparen	expression TOK_rparen");}
+	:	name											
+	{TRACEPARSE("expression->name");$$ = std::move($1);}
+	|	TOK_true 										
+	{TRACEPARSE("expression->TOK_true");$$ = make_node<BoolNode>(@$, true);}
+	|	TOK_false										
+	{TRACEPARSE("expression->TOK_false");$$ = make_node<BoolNode>(@$, false);}
+	|	TOK_integer										
+	{TRACEPARSE("expression->TOK_integer");$$ = make_node<IntNode>(@$, $1);}
+	|	TOK_float										
+	{TRACEPARSE("expression->TOK_float");$$ = make_node<FloatNode>(@$, $1);}
+	|	binary_expression								
+	{TRACEPARSE("expression->binary_expression"); $$ = std::move($1);}
+	|	unary_expression								
+	{TRACEPARSE("expression->unary_expression"); $$ = std::move($1);}
+	|	relational_expression							
+	{TRACEPARSE("expression->relational_expression"); $$ = std::move($1);}
+	|	ternary_expression								
+	{TRACEPARSE("expression->ternary_expression");$$ = std::move($1);}
+	|	cast_expression									
+	{TRACEPARSE("expression->cast_expression");$$ = std::move($1);}
+	|	function_call									
+	{TRACEPARSE("expression->function_call");$$ = std::move($1);}
+	|	TOK_lparen	expression TOK_rparen				
+	{TRACEPARSE("expression->TOK_lparen	expression TOK_rparen");$$ = std::move($2);}
 	;
 
 type:	TOK_type							
 	{TRACEPARSE("type->TOK_type");$$ = make_node<TypeNode>(@$, $1);}
 	;
+
 name:	TOK_identifier 							
-	{TRACEPARSE("name->TOK_identifier");$$ = make_node<NameNode>(@$, "name");}
+	{TRACEPARSE("name->TOK_identifier");$$ = make_node<NameNode>(@$, $1);}
 	;
 
 binary_op

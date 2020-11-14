@@ -42,9 +42,8 @@ static int make_symbol(YYSTYPE*, YYSTYPE);
 [\r\n]+ {SET_COLUMN(1);}
 [ \t]+ {INC_COLUMN(yyleng);}
 
-
-true {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_true, x);}
-false {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_false,x);}
+true {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_true, x, true);}
+false {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_false, x, false);}
 
 if {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_if,x);}
 while {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_while,x);}
@@ -58,11 +57,7 @@ return {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_return,x);}
 "*=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_star_assign,x);}
 "/=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_slash_assign,x);}
 
-"int"|"float"|"bool"|"void" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_type,x, yytext);}
-
-
-
-
+"int"|"float"|"bool"|"void" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_type,x, std::string{yytext, static_cast<size_t>(yyleng)});}
 
 "(" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_lparen,x);}
 ")" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_rparen,x);}
@@ -91,15 +86,13 @@ return {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_return,x);}
 
 "=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_assign,x);}
 
-[a-zA-Z_][a-zA-Z0-9_]* {int x= GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_identifier, x);}
+[a-zA-Z_][a-zA-Z0-9_]* {int x= GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_identifier, x, std::string{yytext, static_cast<size_t>(yyleng)});}
 
-0|[1-9][0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_integer, x);}
+0|[1-9][0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_integer, x, std::stoi(std::string{yytext, static_cast<size_t>(yyleng)}));}
 
-
-
-(0|[1-9][0-9]*)\.[0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x);}
-\.[0-9]+ {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x);}
-(0|[1-9][0-9]*)\.[0-9]*[eE][+-]?[1-9][0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x);}
+(0|[1-9][0-9]*)\.[0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x, std::stof(std::string{yytext, static_cast<size_t>(yyleng)}));}
+\.[0-9]+ {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x, std::stof(std::string{yytext, static_cast<size_t>(yyleng)}));}
+(0|[1-9][0-9]*)\.[0-9]*[eE][+-]?[1-9][0-9]* {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_float, x, std::stof(std::string{yytext, static_cast<size_t>(yyleng)}));}
 
 
 . { printf("[error] invalid token.\n"); return TOK(YYUNDEF, GET_COLUMN()); }
