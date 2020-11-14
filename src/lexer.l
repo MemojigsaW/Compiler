@@ -58,7 +58,7 @@ return {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_return,x);}
 "*=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_star_assign,x);}
 "/=" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_slash_assign,x);}
 
-"int"|"float"|"bool"|"void" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_type,x);}
+"int"|"float"|"bool"|"void" {int x = GET_COLUMN(); INC_COLUMN(yyleng); return TOK(TOK_type,x, yytext);}
 
 
 

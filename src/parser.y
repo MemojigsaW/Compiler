@@ -26,7 +26,7 @@ static yy::parser::symbol_type yylex(yyscan_t);
 
 template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::parser::location_type const&, Args&&...);
 
-#define SHOWPARSE true
+#define SHOWPARSE false
 #define TRACEPARSE(x) if (SHOWPARSE) printf("%s\n", x)
 
 }
@@ -42,7 +42,7 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %define api.value.type variant
 %define api.token.constructor
 //todo enable in lab 3
-%define api.value.automove
+/* %define api.value.automove */
 %define parse.trace
 %define parse.assert
 
@@ -66,7 +66,7 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 
 //Lab 3 updates
 %token TOK_plus_assign TOK_minus_assign TOK_star_assign TOK_slash_assign
-%token TOK_type
+%token <std::string>TOK_type
 
 
 /*Precedence - first declare is lowest*/
@@ -89,9 +89,13 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %right TOK_uminus
 %left TOK_lparen TOK_rparen TOK_lbrace TOK_rbrace 
 
-
+//declare node type for AST
 
 %type <std::unique_ptr<Node>> root
+%type <std::unique_ptr<OperatorNode>> augmented_assign_op relational_op unary_op binary_op
+%type <std::unique_ptr<TypeNode>> type
+%type <std::unique_ptr<NameNode>> name
+
 
 %start root
 
@@ -109,10 +113,6 @@ function:	function_decl TOK_semicolon 		{TRACEPARSE("function->function_decl TOK
 function_decl:	type name TOK_lparen parameter_list TOK_rparen {TRACEPARSE("function_decl->type name TOK_lparen parameter_list TOK_rparen");}
 	;
 function_defn:	function_decl block								{TRACEPARSE("function_defn->function_decl block	");}
-	;
-type:	TOK_type							{TRACEPARSE("type->TOK_type");}
-	;
-name:	TOK_identifier 							{TRACEPARSE("name->TOK_identifier");}
 	;
 parameter_list: declaration comma_dec_kleene	{TRACEPARSE("parameter_list->declaration comma_dec_kleene");}
 	|	/*empty*/								{TRACEPARSE("parameter_list->/*empty*/");}
@@ -136,8 +136,7 @@ statement:	single_statement TOK_semicolon		{TRACEPARSE("statement->single_statem
 	
 single_statement:	declaration TOK_assign expression	{TRACEPARSE("single_statement->declaration TOK_assign expression");}
 	|	name TOK_assign expression						{TRACEPARSE("single_statement->name TOK_assign expression");}
-	/* |	name binary_op expression						{TRACEPARSE("single_statement->name binary_op expression");} */
-	|	name augmented_assign expression				{TRACEPARSE("single_statement->name augmented_assign expression");}
+	|	name augmented_assign_op expression				{TRACEPARSE("single_statement->name augmented_assign_op expression");}
 	|	TOK_break										{TRACEPARSE("single_statement->TOK_break");}
 	|	TOK_continue									{TRACEPARSE("single_statement->TOK_continue");}
 	|	TOK_return expression_question					{TRACEPARSE("single_statement->TOK_return expression_question");}
@@ -147,22 +146,7 @@ single_statement:	declaration TOK_assign expression	{TRACEPARSE("single_statemen
 expression_question:	expression 						{TRACEPARSE("expression_question->expression");}
 	|	/*empty*/										{TRACEPARSE("expression_question->/*empty*/");}
 	;
-	
-expression
-	:	name											{TRACEPARSE("expression->name");}
-	|	TOK_true 										{TRACEPARSE("expression->TOK_true");}
-	|	TOK_false										{TRACEPARSE("expression->TOK_false");}
-	|	TOK_integer										{TRACEPARSE("expression->TOK_integer");}
-	|	TOK_float										{TRACEPARSE("expression->TOK_float");}
-	|	binary_expression								{TRACEPARSE("expression->binary_expression");}
-	|	unary_expression								{TRACEPARSE("expression->unary_expression");}
-	|	relational_expression							{TRACEPARSE("expression->relational_expression");}
-	|	ternary_expression								{TRACEPARSE("expression->ternary_expression");}
-	|	cast_expression									{TRACEPARSE("expression->cast_expression");}
-	|	function_call									{TRACEPARSE("expression->function_call");}
-	|	TOK_lparen	expression TOK_rparen				{TRACEPARSE("expression->TOK_lparen	expression TOK_rparen");}
-	;
-	
+		
 compound_statement:	TOK_if	TOK_lparen	expression TOK_rparen	block	{TRACEPARSE("compound_statement->TOK_if	TOK_lparen	expression TOK_rparen	block");}
 	|	TOK_for	TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block
 	{TRACEPARSE("compound_statement->TOK_for	TOK_lparen single_statement_question TOK_semicolon expression_question TOK_semicolon single_statement_question TOK_rparen block");}
@@ -182,24 +166,6 @@ unary_expression:	unary_op expression %prec TOK_unop		{TRACEPARSE("unary_express
 relational_expression:	expression relational_op expression %prec TOK_relop	{TRACEPARSE("relational_expression->expression relational_op expression");}
 	;
 	
-binary_op:	TOK_plus	{TRACEPARSE("binary_op->TOK_plus");}
-	|	TOK_minus	{TRACEPARSE("binary_op->TOK_minus");}
-	|	TOK_star	{TRACEPARSE("binary_op->TOK_star");}
-	|	TOK_slash	{TRACEPARSE("binary_op->TOK_slash");}
-	|	TOK_log_and	{TRACEPARSE("binary_op->TOK_log_and");}
-	|	TOK_log_or	{TRACEPARSE("binary_op->TOK_log_or");}
-	;
-	
-unary_op:	TOK_minus %prec TOK_uminus	{TRACEPARSE("unary_op->TOK_minus");}
-	;
-	
-relational_op:	TOK_eq	{TRACEPARSE("relational_op->TOK_eq");}
-	|	TOK_ne	{TRACEPARSE("relational_op->TOK_ne");}
-	|	TOK_lt	{TRACEPARSE("relational_op->TOK_lt");}
-	|	TOK_gt	{TRACEPARSE("relational_op->TOK_gt");}
-	|	TOK_le	{TRACEPARSE("relational_op->TOK_le");}
-	|	TOK_ge	{TRACEPARSE("relational_op->TOK_ge");}
-	;
 ternary_expression:	expression TOK_question_mark expression TOK_colon expression
 {TRACEPARSE("ternary_expression->expression TOK_question_mark expression TOK_colon expression");}
 	;
@@ -215,11 +181,72 @@ _ecee:	TOK_comma expression _ecee	{TRACEPARSE("_ecee->TOK_comma expression _ecee
 	|	/*empty*/	{TRACEPARSE("_ecee->/*empty*/");}
 	;
 
-augmented_assign
-	:	TOK_plus_assign	{TRACEPARSE("augmented_assign -> TOK_plus_assign");}
-	|	TOK_minus_assign	{TRACEPARSE("augmented_assign -> TOK_minus_assign");}
-	|	TOK_star_assign	{TRACEPARSE("augmented_assign -> TOK_star_assign");}
-	|	TOK_slash_assign	{TRACEPARSE("augmented_assign -> TOK_slash_assign");}
+expression
+	:	name											{TRACEPARSE("expression->name");}
+	|	TOK_true 										{TRACEPARSE("expression->TOK_true");}
+	|	TOK_false										{TRACEPARSE("expression->TOK_false");}
+	|	TOK_integer										{TRACEPARSE("expression->TOK_integer");}
+	|	TOK_float										{TRACEPARSE("expression->TOK_float");}
+	|	binary_expression								{TRACEPARSE("expression->binary_expression");}
+	|	unary_expression								{TRACEPARSE("expression->unary_expression");}
+	|	relational_expression							{TRACEPARSE("expression->relational_expression");}
+	|	ternary_expression								{TRACEPARSE("expression->ternary_expression");}
+	|	cast_expression									{TRACEPARSE("expression->cast_expression");}
+	|	function_call									{TRACEPARSE("expression->function_call");}
+	|	TOK_lparen	expression TOK_rparen				{TRACEPARSE("expression->TOK_lparen	expression TOK_rparen");}
+	;
+
+type:	TOK_type							
+	{TRACEPARSE("type->TOK_type");$$ = make_node<TypeNode>(@$, $1);}
+	;
+name:	TOK_identifier 							
+	{TRACEPARSE("name->TOK_identifier");$$ = make_node<NameNode>(@$, "name");}
+	;
+
+binary_op
+	:	TOK_plus	
+	{TRACEPARSE("binary_op->TOK_plus");$$=make_node<OperatorNode>(@$, "+");}
+	|	TOK_minus	
+	{TRACEPARSE("binary_op->TOK_minus");$$=make_node<OperatorNode>(@$, "-");}
+	|	TOK_star	
+	{TRACEPARSE("binary_op->TOK_star");$$=make_node<OperatorNode>(@$, "*");}
+	|	TOK_slash	
+	{TRACEPARSE("binary_op->TOK_slash");$$=make_node<OperatorNode>(@$, "/");}
+	|	TOK_log_and	
+	{TRACEPARSE("binary_op->TOK_log_and");$$=make_node<OperatorNode>(@$, "&&");}
+	|	TOK_log_or	
+	{TRACEPARSE("binary_op->TOK_log_or");$$=make_node<OperatorNode>(@$, "||");}
+	;
+
+unary_op
+	:	TOK_minus %prec TOK_uminus	
+	{TRACEPARSE("unary_op->TOK_minus");$$=make_node<OperatorNode>(@$, "-");}
+	;
+	
+relational_op
+	:	TOK_eq	
+	{TRACEPARSE("relational_op->TOK_eq");$$=make_node<OperatorNode>(@$, "==");}
+	|	TOK_ne	
+	{TRACEPARSE("relational_op->TOK_ne");$$=make_node<OperatorNode>(@$, "!=");}
+	|	TOK_lt	
+	{TRACEPARSE("relational_op->TOK_lt");$$=make_node<OperatorNode>(@$, "<");}
+	|	TOK_gt	
+	{TRACEPARSE("relational_op->TOK_gt");$$=make_node<OperatorNode>(@$, ">");}
+	|	TOK_le	
+	{TRACEPARSE("relational_op->TOK_le");$$=make_node<OperatorNode>(@$, "<=");}
+	|	TOK_ge	
+	{TRACEPARSE("relational_op->TOK_ge");$$=make_node<OperatorNode>(@$, ">=");}
+	;
+
+augmented_assign_op
+	:	TOK_plus_assign	
+	{TRACEPARSE("augmented_assign_op -> TOK_plus_assign");$$=make_node<OperatorNode>(@$, "+=");}
+	|	TOK_minus_assign	
+	{TRACEPARSE("augmented_assign_op -> TOK_minus_assign");$$=make_node<OperatorNode>(@$, "-=");}
+	|	TOK_star_assign	
+	{TRACEPARSE("augmented_assign_op -> TOK_star_assign");$$=make_node<OperatorNode>(@$, "*=");}
+	|	TOK_slash_assign	
+	{TRACEPARSE("augmented_assign_op -> TOK_slash_assign");$$=make_node<OperatorNode>(@$, "/=");}
 
 %%
 
@@ -237,5 +264,6 @@ void yy::parser::error(location_type const& loc, std::string const& msg) {
 template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::parser::location_type const& loc, Args&&... args) {
 	std::unique_ptr<T> n = std::make_unique<T>(std::forward<Args>(args)...);
 	n->location = loc;
+	n->print();
 	return n;
 }

@@ -12,3 +12,27 @@ path variable is changed, do nto use default cmake, change to right
 /prefix/c++
 in setting
 
+Location Tracking:
+make_node function takes care of location of the node 
+
+AST:
+node types keep track of necessary information, receive from grammar 
+and build tree in bison (.y) with $$...$ references. Create name for each node 
+for printing purposes. Make printing sequential for all right now. 
+
+    Operators:
+        Saved as std::string 
+
+    Var:
+        Since there is no calculation in AST (Lab3) no point of saving the value 
+        as it is not updated
+
+
+
+Cpp Classes:
+Inheritance:
+    Virtual:
+        virtual function does not need to be defined in child
+        pure virtaul (=0) needs to be defined in child 
+
+
