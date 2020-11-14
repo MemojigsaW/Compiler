@@ -95,7 +95,10 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %type <std::unique_ptr<OperatorNode>> augmented_assign_op relational_op unary_op binary_op
 %type <std::unique_ptr<TypeNode>> type
 %type <std::unique_ptr<NameNode>> name
-%type <std::unique_ptr<Node>> expression
+
+%type <std::unique_ptr<Node>> expression expression_question
+%type <std::unique_ptr<Node>> single_statement
+
 %type <std::unique_ptr<ChainNode>> _ece _ecee
 %type <std::unique_ptr<FunctionCallNode>> function_call
 %type <std::unique_ptr<BinaryExprNode>> binary_expression relational_expression
@@ -103,6 +106,7 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %type <std::unique_ptr<CastNode>> cast_expression
 %type <std::unique_ptr<TernaryExprNode>> ternary_expression
 
+%type <std::unique_ptr<DeclNode>> declaration
 
 %start root
 
@@ -169,19 +173,20 @@ single_statement
 	|	TOK_return expression_question					
 	{TRACEPARSE("single_statement->TOK_return expression_question");}
 	|	expression										
-	{TRACEPARSE("single_statement->expression");}
+	{TRACEPARSE("single_statement->expression"); $$ = std::move($1);}
 	;
 
 declaration
 	:	type name						
-	{TRACEPARSE("declaration->type name");}
+	{TRACEPARSE("declaration->type name");
+	$$ = make_node<DeclNode>(@$, std::move($1), std::move($2));}
 	;
 
 expression_question
 	:	expression 						
-	{TRACEPARSE("expression_question->expression");}
+	{TRACEPARSE("expression_question->expression");$$ = std::move($1);}
 	|	/*empty*/										
-	{TRACEPARSE("expression_question->/*empty*/");}
+	{TRACEPARSE("expression_question->/*empty*/");$$ = nullptr;}
 	;
 
 

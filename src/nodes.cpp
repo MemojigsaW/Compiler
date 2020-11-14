@@ -133,3 +133,14 @@ void TernaryExprNode::print() {
     this->do_false->print();
     printf("Ternary Expression End(%d, %d)\n\n", this->location.end.line, this->location.end.column);
 }
+//DeclNode
+DeclNode::DeclNode(std::unique_ptr<TypeNode> _type, std::unique_ptr<NameNode> _name) {
+    this->type = std::move(_type);
+    this->name = std::move(_name);
+}
+void DeclNode::print() {
+    printf("Declaration Start(%d, %d)\n", this->location.begin.line, this->location.begin.column);
+    this->type->print();
+    this->name->print();
+    printf("Declaration End(%d, %d)\n\n", this->location.end.line, this->location.end.column);
+}

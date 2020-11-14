@@ -140,4 +140,14 @@ public:
     void optimize(){;}
 };
 
+class DeclNode: public Node{
+public:
+    std::unique_ptr<TypeNode> type;
+    std::unique_ptr<NameNode> name;
+    DeclNode(std::unique_ptr<TypeNode> _type, std::unique_ptr<NameNode> _name);
+    void print();
+    void verify(){;}
+    void optimize(){;}
+};
+
 #endif // ECE467_NODE_HPP_INCLUDED
