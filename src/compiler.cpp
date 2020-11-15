@@ -63,9 +63,12 @@ int parse(char const* path, std::unique_ptr<Node>& root) {
 }
 
 bool verify_ast(Node* root) {
-	(void) root;
 	// TODO: lab 3
-	return true;
+	if (root->verify()){
+	    return true;
+	} else{
+	    return false;
+	}
 }
 
 std::unique_ptr<Node> optimize(std::unique_ptr<Node> root) {
@@ -75,7 +78,7 @@ std::unique_ptr<Node> optimize(std::unique_ptr<Node> root) {
 
 void print_ast(Node* root) {
 	// TODO: lab 3
-	(void) root;
+	root->print();
 	return;
 }
 

@@ -21,6 +21,10 @@ Scanner:
     pick up string by casting it 
         std::string{yytext, static_cast<size_t>(yyleng)}
 
+Bison:
+    %left for token only works if there are things on left and right of production of token
+    E.g. defining binary op as separate production then expr bin_op expr does not work with %left 
+    precedence of operators. Only if production as expr TOK_plus expr, ...expr TOK_star expr. 
 
 AST:
 node types keep track of necessary information, receive from grammar 
