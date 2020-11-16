@@ -64,11 +64,10 @@ int parse(char const* path, std::unique_ptr<Node>& root) {
 
 bool verify_ast(Node* root) {
 	// TODO: lab 3
-	if (root->verify()){
-	    return true;
-	} else{
-	    return false;
-	}
+    bool check = root->verify();
+
+//    check = true;
+    return check;
 }
 
 std::unique_ptr<Node> optimize(std::unique_ptr<Node> root) {

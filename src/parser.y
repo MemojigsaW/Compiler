@@ -13,7 +13,6 @@ typedef void* yyscan_t;
 class Node;
 
 
-
 }
 
 %code {
@@ -96,7 +95,7 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %type <std::unique_ptr<Node>> expression expression_question
 %type <std::unique_ptr<Node>> single_statement single_statement_question
 %type <std::unique_ptr<Node>> statement compound_statement
-%type <std::unique_ptr<Node>> function function_list
+%type <std::unique_ptr<Node>> function 
 
 %type <std::unique_ptr<ChainNode>> _ece _ecee statement_kleene suite comma_dec_kleene
 %type <std::unique_ptr<ChainNode>> function_plus
@@ -112,6 +111,7 @@ template <typename T, typename... Args> static std::unique_ptr<T> make_node(yy::
 %type <std::unique_ptr<ParamNode>> parameter_list
 %type <std::unique_ptr<FuncDeclNode>> function_decl
 %type <std::unique_ptr<FuncDefNode>> function_defn
+%type <std::unique_ptr<FuncListNode>> function_list
 
 %start root
 
@@ -123,7 +123,7 @@ root
 
 function_list
 	:	function_plus					
-	{TRACEPARSE("function_list->function_plus");$$ = std::move($1);}
+	{TRACEPARSE("function_list->function_plus");$$ = make_node<FuncListNode>(@$, std::move($1));}
 	;
 
 function_plus:	function						
@@ -146,6 +146,7 @@ function_decl
 	{TRACEPARSE("function_decl->type name TOK_lparen parameter_list TOK_rparen");
 	$$ = make_node<FuncDeclNode>(@$, std::move($1), std::move($2), std::move($4));}
 	;
+	
 function_defn
 	:	function_decl block								
 	{TRACEPARSE("function_defn->function_decl block	");
@@ -170,10 +171,12 @@ comma_dec_kleene
 	;
 
 block
-	:	TOK_lbrace suite TOK_rbrace				
+	:	LB suite TOK_rbrace				
 	{TRACEPARSE("block->TOK_lbrace suite TOK_rbrace");
 	$$ = make_node<BlockNode>(@$, std::move($2));}
 	;
+
+LB:	TOK_lbrace {ST_v.push_back(SymbolTable());}
 
 suite
 	:	statement_kleene						

@@ -1,7 +1,10 @@
 #include "nodes.hpp"
 
-Node::~Node() = default;
+SymbolTable global_ST, root_ST;
+std::vector<std::string> returnlist;
+std::vector<SymbolTable> ST_v;
 
+Node::~Node() = default;
 
 //Operator Node
 OperatorNode::OperatorNode(std::string oper) {
@@ -138,6 +141,17 @@ void TernaryExprNode::print() {
 DeclNode::DeclNode(std::unique_ptr<TypeNode> _type, std::unique_ptr<NameNode> _name) {
     this->type = std::move(_type);
     this->name = std::move(_name);
+//    Add to symbol table
+    global_ST.AddSymbols( this->name->name, this->type->type);
+//    check if in block yet.
+    if (ST_v.empty()){
+//        empty when in funclist
+        ;
+    } else{
+//        in a block
+        ST_v.back().AddSymbols(this->name->name, this->type->type);
+        ;
+    }
 }
 void DeclNode::print() {
     printf("Declaration Start(%d, %d)\n", this->location.begin.line, this->location.begin.column);
@@ -180,6 +194,7 @@ void AssignmentNode::print() {
 }
 //VarDeclNode
 VarDeclNode::VarDeclNode(std::unique_ptr<DeclNode> _decl, std::unique_ptr<Node> _expr) {
+//    Var decl must follow _expr where _expr cannot be null
     this->decl = std::move(_decl);
     this->Expr = std::move(_expr);
 }
@@ -193,11 +208,20 @@ void VarDeclNode::print() {
 //BlockNode
 BlockNode::BlockNode(std::unique_ptr<ChainNode> _start) {
     this->start = std::move(_start);
+//    Assign and reset symboltable for scope
+//    this->scoped_ST = global_ST;
+    this->scoped_ST = ST_v.back();
+    ST_v.pop_back();
+
+//    check dup upon creation
+    this->scoped_ST.CheckDuplicate();
+    global_ST = SymbolTable();
 }
 void BlockNode::print() {
     printf("Block start (%d,%d)\n", this->location.begin.line, this->location.begin.column);
     this->start->print();
     printf("Block End (%d,%d)\n", this->location.end.line, this->location.end.column);
+//    this->scoped_ST.PrintST();
 }
 
 //IfNode
@@ -271,6 +295,41 @@ FuncDeclNode::FuncDeclNode(std::unique_ptr<TypeNode> _type, std::unique_ptr<Name
     this->type =  std::move(_type);
     this->name = std::move(_name);
     this->params = std::move(_param);
+
+//    Scope Management
+    SymbolTable local_table;
+    if (this->params->decl == NULL){
+        local_table.symbols.clear();
+    } else{
+        local_table.AddSymbols(this->params->decl->name->name, this->params->decl->type->type);
+        ChainNode* head = this->params->start.get();
+        while(head->current!=NULL){
+            DeclNode* current = dynamic_cast<DeclNode*>(head->current.get());
+            local_table.AddSymbols(current->name->name, current->type->type);
+            head = head->next.get();
+        }
+    }
+    this->parameters = local_table;
+//    local_table tracks all params of this func
+//    func decl stores once, func def stores once
+//    check if symbols already have
+    bool exist = false;
+    for (auto iter = std::begin(root_ST.symbols); iter!=std::end(root_ST.symbols); ++iter){
+        if (iter->name == this->name->name &&
+        iter->type == this->type->type &&
+        iter->parameters.size() == local_table.symbols.size()){
+//            Shady getaround, write overload operators later.
+            exist = true;
+        }
+    }
+
+    if (exist){
+        ;
+    }else{
+        root_ST.AddFunction(this->name->name, this->type->type, local_table.symbols);
+    }
+//    no global variable declaration in this parser, clear global tracking
+    global_ST = SymbolTable();
 }
 void FuncDeclNode::print() {
     printf("Function Declaration Start (%d, %d)\n", this->location.begin.line, this->location.begin.column);
@@ -289,4 +348,18 @@ void FuncDefNode::print() {
     this->funcdecl->print();
     this->block->print();
     printf("Function Definition end (%d, %d)\n", this->location.end.line, this->location.end.column);
+}
+//FunclIstNode
+FuncListNode::FuncListNode(std::unique_ptr<ChainNode> _chain) {
+    this->chain = std::move(_chain);
+//    Scope Management
+    this->Scoped_ST = root_ST;
+//    check duplicate in global (since no global varaible allowed, only function check)
+    this->Scoped_ST.CheckDuplicate();
+//    keep root_ST and use it to check in verify
+}
+void FuncListNode::print() {
+    printf("Function List Start (%d,%d)\n", this->location.begin.line, this->location.begin.column);
+    this->chain->print();
+    printf("Function List End (%d,%d)\n", this->location.end.line, this->location.end.column);
 }

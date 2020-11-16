@@ -1,6 +1,6 @@
 /*
  * UofT ECE 467
- * - student number, first name, last name
+ * - 1002654950, Yang, Xiu
  * - student number, first name, last name
  */
 
