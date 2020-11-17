@@ -5,7 +5,14 @@
 #include <memory>
 #include <string>
 #include <vector>
+/**************************************************************/
+template <typename T, typename... Args> static std::unique_ptr<T> makenode(yy::location const&, Args&&...);
 
+template <typename T, typename... Args> static std::unique_ptr<T> makenode(yy::location const& loc, Args&&... args) {
+    std::unique_ptr<T> n = std::make_unique<T>(std::forward<Args>(args)...);
+    n->location = loc;
+    return n;
+}
 
 /**************************************************************/
 class SymbolTable{
@@ -146,11 +153,12 @@ class Node {
 public:
 	yy::location location;
 	std::string expr_type;
+	bool isconstant = false;
 
 	virtual ~Node() = 0;
 	virtual void print()=0;
 	virtual bool verify()=0;
-	virtual void optimize()=0;
+	virtual std::unique_ptr<Node> optimize()=0;
 	virtual std::string resolve_type(){return "";}
 };
 
@@ -164,8 +172,8 @@ public:
 //        nothing to verify
         return true;
     }
-    void optimize() {
-        ;
+    std::unique_ptr<Node> optimize(){
+        return nullptr;
     }
 };
 
@@ -177,7 +185,8 @@ public:
     bool verify(){
         return true;
     }
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        return nullptr;}
 };
 
 class NameNode : public Node{
@@ -188,7 +197,8 @@ public:
     bool verify(){
         return true;
     }
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        return nullptr;}
     std::string resolve_type(){
 //        returns the type, not assign to expr_type
 //        returns either type or fail.
@@ -204,7 +214,8 @@ public:
     bool verify(){
         return true;
     }
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        return nullptr;}
     std::string resolve_type(){
         return "bool";
     }
@@ -218,7 +229,8 @@ public:
     bool verify(){
         return true;
     }
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        return nullptr;}
     std::string resolve_type(){
         return "int";
     }
@@ -230,7 +242,8 @@ public:
     FloatNode(float val);
     void print();
     bool verify(){return true;}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        return nullptr;}
     std::string resolve_type(){
         return "float";
     }
@@ -255,7 +268,21 @@ public:
             return false;
         }
     }
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+//        terminate condition
+        if (this->current == NULL && this->next == NULL){
+            return nullptr;
+        }
+
+        std::unique_ptr<Node> ptr = this->current->optimize();
+        if (ptr != NULL){
+//            inplace reassign
+            this->current = std::move(ptr);
+        }
+        std::unique_ptr<Node> ptr2 = this->next->optimize();
+//        fall through, does not modify the chainnodes. Only reassign
+//         the current nodes
+        return nullptr;}
 };
 
 class FunctionCallNode: public Node{
@@ -293,13 +320,17 @@ public:
             return false;
         }
     }
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        //        the name node cannot be optimized
+        std::unique_ptr<Node> ptr1 = this->namenode->optimize();
+        //        expected nullptr for both, where each chain node does in place optimization.
+        std::unique_ptr<Node> ptr2 = this->chainode->optimize();
+        return nullptr;}
     std::string resolve_type(){
 //        returns the type, not assign to expr_type
 //        returns either type or fail.
         return root_ST.GetType(this->namenode->name, true);
     }
-
 };
 
 class BinaryExprNode: public Node{
@@ -310,19 +341,255 @@ public:
     BinaryExprNode(std::unique_ptr<Node> _left, std::string _op, std::unique_ptr<Node> _right);
     void print();
     bool verify(){
-        if (left->verify() && right->verify()){
-            if (this->resolve_type() == "FAIL"){
+        if (left->verify() && right->verify()) {
+            if (this->resolve_type() == "FAIL") {
                 return false;
-            } else{
-                return true;
             }
-        }
-        else{
+//            check permissible left, right types and operator combination
+            else if (op == "+" || op == "-" || op == "*" || op == "/" || op == "<=" || op == ">=" || op == "<" ||
+                     op == ">") {
+                if (this->right->resolve_type() == "int" || (this->right->resolve_type() == "float")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (op == "||" || op == "&&") {
+                if (this->right->resolve_type() == "bool") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (op == "==" || op == "!=") {
+                if (this->right->resolve_type() == "int" || (this->right->resolve_type() == "float") ||
+                    (this->right->resolve_type() == "bool")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }else{
             return false;
         }}
 
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+//        Propagate
+        std::unique_ptr<Node> ptrleft = this->left->optimize();
+        std::unique_ptr<Node> ptrright = this->right->optimize();
+        if (ptrleft!=NULL){
+            this->left = std::move(ptrleft);
+        }
+        if (ptrright!=NULL){
+            this->right = std::move(ptrright);
+        }
+//      Condition for conversion
+//      right and left are both intnodes/floatnodes +_</, >=,<=,>,<, ==, !=
+//      right and left are both boolnodes ||, &&, ==, !=
+        if (this->left->isconstant && this->right->isconstant){
+//            both are constant simplify
+//            make node for each type
+            if (op == "+"){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<IntNode>(this->location,
+                                             (dynamic_cast<IntNode*>(this->left.get())->val
+                                             +
+                                             dynamic_cast<IntNode*>(this->right.get())->val)
+                                             );
+                }else{
+
+                    return makenode<FloatNode>(this->location,
+                                               (dynamic_cast<FloatNode*>(this->left.get())->val
+                                             +
+                                             dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+            }else if (op == "-"){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<IntNode>(this->location,
+                                             (dynamic_cast<IntNode*>(this->left.get())->val
+                                             -
+                                             dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else{
+
+                    return makenode<FloatNode>(this->location,
+                                               (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               -
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == "*"){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<IntNode>(this->location,
+                                             (dynamic_cast<IntNode*>(this->left.get())->val
+                                             *
+                                             dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else{
+
+                    return makenode<FloatNode>(this->location,
+                                               (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               *
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == "/"){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<IntNode>(this->location,
+                                             (dynamic_cast<IntNode*>(this->left.get())->val
+                                             /
+                                             dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else{
+
+                    return makenode<FloatNode>(this->location,
+                                               (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               /
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == ">="){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<IntNode*>(this->left.get())->val
+                                             >=
+                                             dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else{
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               >=
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == "<="){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<IntNode*>(this->left.get())->val
+                                              <=
+                                              dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else{
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<FloatNode*>(this->left.get())->val
+                                              <=
+                                              dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == "<"){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<IntNode*>(this->left.get())->val
+                                               <
+                                               dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else{
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               <
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == ">"){
+                if (this->left->resolve_type() == "int"){
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<IntNode*>(this->left.get())->val
+                                               >
+                                               dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else{
+
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               >
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == "||"){
+                return makenode<BoolNode>(this->location,
+                                          (dynamic_cast<BoolNode*>(this->left.get())->val
+                                           ||
+                                           dynamic_cast<BoolNode*>(this->right.get())->val)
+                                          );
+
+            }else if(op == "&&"){
+                return makenode<BoolNode>(this->location,
+                                          (dynamic_cast<BoolNode*>(this->left.get())->val
+                                           &&
+                                           dynamic_cast<BoolNode*>(this->right.get())->val)
+                );
+
+            }else if(op == "=="){
+                if (this->left->resolve_type() == "int"){
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<IntNode*>(this->left.get())->val
+                                               ==
+                                               dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else if (this->left->resolve_type() == "float"){
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               ==
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }else{
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<BoolNode*>(this->left.get())->val
+                                               ==
+                                               dynamic_cast<BoolNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else if(op == "!="){
+                if (this->left->resolve_type() == "int"){
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<IntNode*>(this->left.get())->val
+                                               !=
+                                               dynamic_cast<IntNode*>(this->right.get())->val)
+                    );
+                }else if (this->left->resolve_type() == "float"){
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<FloatNode*>(this->left.get())->val
+                                               !=
+                                               dynamic_cast<FloatNode*>(this->right.get())->val)
+                    );
+                }else{
+                    return makenode<BoolNode>(this->location,
+                                              (dynamic_cast<BoolNode*>(this->left.get())->val
+                                               !=
+                                               dynamic_cast<BoolNode*>(this->right.get())->val)
+                    );
+                }
+
+            }else{
+                return nullptr;
+            }
+        }
+        else{
+            return nullptr;
+        }}
     std::string resolve_type(){
+//        allows comparison of int, float or bool(void) for any operator
+
         if (op == "+" || op == "-" || op == "*" || op == "/"){
             if (left->resolve_type().compare(right->resolve_type())==0){
                 return left->resolve_type();
@@ -345,9 +612,10 @@ public:
     UnaryExprNode(std::unique_ptr<OperatorNode> _op, std::unique_ptr<Node> _expr);
     void print();
     bool verify(){
+
         if (Expr->verify() && op->verify()){
             std::string check = this->resolve_type();
-            if (check=="int"||check=="float"||check=="bool"){
+            if (check=="int"||check=="float"){
                 return true;
             }else {
                 return false;
@@ -355,7 +623,26 @@ public:
         else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+//        propagate and assign
+        std::unique_ptr<Node> ptr = this->Expr->optimize();
+        if (ptr!=NULL){
+            this->Expr = std::move(ptr);
+        }
+//        specific check
+        if (this->Expr->isconstant){
+//            either int or float
+            if (this->Expr->resolve_type() == "int"){
+                return makenode<IntNode>(this->location,
+                                         -dynamic_cast<IntNode*>(this->Expr.get())->val);
+
+            }else{
+                return makenode<FloatNode>(this->location,
+                                         -dynamic_cast<FloatNode*>(this->Expr.get())->val);
+            }
+        }else{
+            return nullptr;
+        }}
     std::string resolve_type(){
         return Expr->resolve_type();
     }
@@ -373,7 +660,13 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr = this->type->optimize(); //nullptr
+        std::unique_ptr<Node> ptr2 = this->Expr->optimize();
+        if (ptr2!=NULL){
+            this->Expr = std::move(ptr2);
+        }
+        return nullptr;}
     std::string resolve_type(){
         return type->type;
     }
@@ -397,7 +690,21 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->condition->optimize();
+        std::unique_ptr<Node> ptr2 = this->do_true->optimize();
+        std::unique_ptr<Node> ptr3 = this->do_false->optimize();
+        if (this->condition->isconstant){
+            BoolNode* check = dynamic_cast<BoolNode*>(this->condition.get());
+            if (check->val){
+                return std::move(this->do_true);
+            }else{
+                return std::move(this->do_false);
+            }
+        }else{
+            return nullptr;
+        }
+        }
 //    Assume do_true and do_false has same type of return
     std::string resolve_type(){
         if (do_true->resolve_type().compare(do_false->resolve_type())==0){
@@ -420,7 +727,10 @@ public:
         } else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->type->optimize(); //nullptr
+        std::unique_ptr<Node> ptr2 = this->name->optimize(); //nullptr
+        return nullptr;}
 };
 
 class ControlNode: public Node{
@@ -429,7 +739,8 @@ public:
     ControlNode(std::string _val);
     void print();
     bool verify(){return true;}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        return nullptr;}
 };
 
 class ReturnNode: public Node{
@@ -448,7 +759,13 @@ public:
             returnlist.push_back(this->Expr->resolve_type());
         }
         return true;}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr = this->Expr->optimize();
+        if (ptr!=NULL){
+            this->Expr = std::move(ptr);
+        }
+            return nullptr;
+        }
 };
 class AssignmentNode: public Node{
 public:
@@ -463,7 +780,17 @@ public:
         }else {
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->left->optimize();
+        std::unique_ptr<Node> ptr2 = this->right->optimize();
+        if (ptr1!=NULL){
+            this->left = std::move(ptr1);
+        }
+        if (ptr2!=NULL){
+            this->right = std::move(ptr2);
+        }
+        return nullptr;
+        }
 };
 class VarDeclNode: public Node{
 public:
@@ -481,7 +808,14 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->decl->optimize();//nullptr
+        std::unique_ptr<Node> ptr2 = this->Expr->optimize();
+        if (ptr2!=NULL){
+            this->Expr = std::move(ptr2);
+        }
+
+        return nullptr;}
 };
 
 class BlockNode: public Node{
@@ -509,7 +843,9 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->start->optimize();
+        return nullptr;}
 };
 
 class IfNode:public Node{
@@ -528,7 +864,22 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->cond->optimize();
+        std::unique_ptr<Node> ptr2 = this->block->optimize(); //nullptr;
+        if (ptr1!=NULL){
+            this->cond = std::move(ptr1);
+        }
+        if (this->cond->isconstant){
+            BoolNode* check = dynamic_cast<BoolNode*>(this->cond.get());
+            if(check->val){
+                return std::move(this->block);
+            }else{
+                return makenode<ChainNode>(this->location, nullptr, nullptr);
+            }
+        }else{
+            return nullptr;
+        }}
 };
 class ForNode:public Node{
 public:
@@ -553,7 +904,27 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        if (this->Expr1!=NULL){
+            std::unique_ptr<Node> ptr1 = this->Expr1->optimize();
+            if (ptr1!=NULL){
+                this->Expr1 = std::move(ptr1);
+            }
+        }
+        if (this->Expr2!=NULL){
+            std::unique_ptr<Node> ptr2 = this->Expr2->optimize();
+            if (ptr2!=NULL){
+                this->Expr2 = std::move(ptr2);
+            }
+        }
+        if (this->Expr3!=NULL){
+            std::unique_ptr<Node> ptr3 = this->Expr3->optimize();
+            if (ptr3!=NULL){
+                this->Expr3 = std::move(ptr3);
+            }
+        }
+        std::unique_ptr<Node> ptr4 = this->block->optimize(); //nullptr
+        return nullptr;}
 };
 class WhileNode:public Node{
 public:
@@ -571,7 +942,25 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->cond->optimize();
+        std::unique_ptr<Node> ptr2 = this->block->optimize(); //nullptr
+        if (ptr1!=NULL){
+            this->cond = std::move(ptr1);
+        }
+
+        if (this->cond->isconstant){
+            BoolNode* check = dynamic_cast<BoolNode*>(this->cond.get());
+            if (check->val){
+                return std::move(this->block);
+            }else{
+                return makenode<ChainNode>(this->location, nullptr, nullptr);
+            }
+        }else{
+            return nullptr;
+        }
+
+        }
 };
 class ParamNode: public Node{
 public:
@@ -588,7 +977,14 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        if (this->decl !=NULL){
+            std::unique_ptr<Node> ptr1 = this->decl->optimize(); //nullptr
+            std::unique_ptr<Node> ptr2 = this->start->optimize(); // nullptr
+            return nullptr;
+        }else{
+            return nullptr;
+        }}
 };
 
 class FuncDeclNode: public Node{
@@ -605,7 +1001,11 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->type->optimize(); //null
+        std::unique_ptr<Node> ptr2 = this->name->optimize(); //null
+        std::unique_ptr<Node> ptr3 = this->params->optimize(); //null
+        return nullptr;}
 };
 class FuncDefNode: public Node{
 public:
@@ -637,7 +1037,10 @@ public:
             }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->funcdecl->optimize(); //null
+        std::unique_ptr<Node> ptr2 = this->block->optimize(); //null
+        return nullptr;}
 };
 class FuncListNode: public Node{
 public:
@@ -660,7 +1063,9 @@ public:
         }else{
             return false;
         }}
-    void optimize(){;}
+    std::unique_ptr<Node> optimize(){
+        std::unique_ptr<Node> ptr1 = this->chain->optimize(); //null
+        return nullptr;}
 };
 
 

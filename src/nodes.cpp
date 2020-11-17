@@ -35,6 +35,7 @@ void NameNode::print() {
 //BoolNode
 BoolNode::BoolNode(bool val) {
     this->val=val;
+    this->isconstant = true;
 }
 void BoolNode::print() {
     printf("Bool (%d, %d)\n", this->location.begin.line, this->location.begin.column);
@@ -43,6 +44,7 @@ void BoolNode::print() {
 //IntNode
 IntNode::IntNode(int val) {
     this->val = val;
+    this->isconstant = true;
 }
 void IntNode::print() {
     printf("Int (%d, %d)\n", this->location.begin.line, this->location.begin.column);
@@ -51,6 +53,7 @@ void IntNode::print() {
 //FloatNode
 FloatNode::FloatNode(float val) {
     this->val=val;
+    this->isconstant = true;
 }
 void FloatNode::print() {
     printf("Float (%d, %d)\n", this->location.begin.line, this->location.begin.column);
